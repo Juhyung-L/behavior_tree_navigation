@@ -45,6 +45,7 @@ DWALocalPlanner::DWALocalPlanner(rclcpp::NodeOptions node_options)
 {
     this->declare_parameter("num_iterations", rclcpp::ParameterValue(1));
     this->declare_parameter("odom_topic", rclcpp::ParameterValue("odom"));
+    this->declare_parameter("costmap_frame", rclcpp::ParameterValue("odom"));
     this->declare_parameter("sim_time", rclcpp::ParameterValue(3.0));
     this->declare_parameter("time_granularity", rclcpp::ParameterValue(0.5));
     this->declare_parameter("debug", rclcpp::ParameterValue(false));
@@ -66,8 +67,7 @@ DWALocalPlanner::on_configure(const rclcpp_lifecycle::State & /*state*/)
     time_granularity_ = this->get_parameter("time_granularity").as_double();
     debug_ = this->get_parameter("debug").as_bool();
     critic_names_ = this->get_parameter("critic_names").as_string_array();
-    nav2_util::declare_parameter_if_not_declared(shared_from_this(), "odom_frame", rclcpp::ParameterValue(std::string("odom")));
-    costmap_frame_ = this->get_parameter("odom_frame").as_string();
+    costmap_frame_ = this->get_parameter("costmap_frame").as_string();
     steps_ = std::ceil(sim_time_ / time_granularity_);
     global_traj_set_ = false;
     prev_num_vel_samples_ = 0;
