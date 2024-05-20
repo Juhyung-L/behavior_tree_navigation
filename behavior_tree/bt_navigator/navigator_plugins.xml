@@ -1,0 +1,9 @@
+<class_libraries>
+	<library path="navigate_to_pose_navigator">
+    <class
+      type="bt_navigator::NavigateToPoseNavigator"
+      base_class_type="bt_navigator::BTNavigatorBase">
+      <description>Navigate to Pose Navigator</description>
+    </class>
+	</library>
+</class_libraries>

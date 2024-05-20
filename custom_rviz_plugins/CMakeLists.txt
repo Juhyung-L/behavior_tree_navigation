@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(gnc_rviz_plugins)
+project(custom_rviz_plugins)
 
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
@@ -36,7 +36,7 @@ set(library_name ${PROJECT_NAME})
 
 add_library(${library_name} SHARED
   src/dwa_trajectories_display.cpp
-  include/gnc_rviz_plugins/dwa_trajectories_display.hpp
+  include/custom_rviz_plugins/dwa_trajectories_display.hpp
 )
 ament_target_dependencies(${library_name} ${dependencies})
 target_include_directories(${library_name} PUBLIC ${OGRE_INCLUDE_DIRS})

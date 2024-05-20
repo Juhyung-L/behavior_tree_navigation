@@ -18,41 +18,47 @@ namespace dwa_core
 class KinematicsParameters
 {
 public:
-    KinematicsParameters(nav2_util::LifecycleNode::SharedPtr nh)
+    KinematicsParameters(const nav2_util::LifecycleNode::WeakPtr parent)
+    : parent_(parent)
     {
-        nh->declare_parameter("min_vel_x", rclcpp::ParameterValue(0.0));
-        nh->declare_parameter("max_vel_x", rclcpp::ParameterValue(0.0));
-        nh->declare_parameter("acc_x", rclcpp::ParameterValue(0.0));
-        nh->declare_parameter("decel_x", rclcpp::ParameterValue(0.0));
+        auto node = parent_.lock();
+        node->declare_parameter("min_vel_x", rclcpp::ParameterValue(0.0));
+        node->declare_parameter("max_vel_x", rclcpp::ParameterValue(0.0));
+        node->declare_parameter("acc_x", rclcpp::ParameterValue(0.0));
+        node->declare_parameter("decel_x", rclcpp::ParameterValue(0.0));
 
-        nh->declare_parameter("min_vel_y", rclcpp::ParameterValue(0.0));
-        nh->declare_parameter("max_vel_y", rclcpp::ParameterValue(0.0));
-        nh->declare_parameter("acc_y", rclcpp::ParameterValue(0.0));
-        nh->declare_parameter("decel_y", rclcpp::ParameterValue(0.0));
+        node->declare_parameter("min_vel_y", rclcpp::ParameterValue(0.0));
+        node->declare_parameter("max_vel_y", rclcpp::ParameterValue(0.0));
+        node->declare_parameter("acc_y", rclcpp::ParameterValue(0.0));
+        node->declare_parameter("decel_y", rclcpp::ParameterValue(0.0));
 
-        nh->declare_parameter("min_vel_theta", rclcpp::ParameterValue(0.0));
-        nh->declare_parameter("max_vel_theta", rclcpp::ParameterValue(0.0));
-        nh->declare_parameter("acc_theta", rclcpp::ParameterValue(0.0));
-        nh->declare_parameter("decel_theta", rclcpp::ParameterValue(0.0));
-        
-        min_vel_x_ = nh->get_parameter("min_vel_x").as_double();
-        max_vel_x_ = nh->get_parameter("max_vel_x").as_double();
-        acc_x_ = nh->get_parameter("acc_x").as_double();
-        decel_x_ = nh->get_parameter("decel_x").as_double();
+        node->declare_parameter("min_vel_theta", rclcpp::ParameterValue(0.0));
+        node->declare_parameter("max_vel_theta", rclcpp::ParameterValue(0.0));
+        node->declare_parameter("acc_theta", rclcpp::ParameterValue(0.0));
+        node->declare_parameter("decel_theta", rclcpp::ParameterValue(0.0));
 
-        min_vel_y_ = nh->get_parameter("min_vel_y").as_double();
-        max_vel_y_ = nh->get_parameter("max_vel_y").as_double();
-        acc_y_ = nh->get_parameter("acc_y").as_double();
-        decel_y_ = nh->get_parameter("decel_y").as_double();
-
-        min_vel_theta_ = nh->get_parameter("min_vel_theta").as_double();
-        max_vel_theta_ = nh->get_parameter("max_vel_theta").as_double();
-        acc_theta_ = nh->get_parameter("acc_theta").as_double();
-        decel_theta_ = nh->get_parameter("decel_theta").as_double();
-
-        dyn_params_handler_ = nh->add_on_set_parameters_callback(
+        dyn_params_handler_ = node->add_on_set_parameters_callback(
             std::bind(&KinematicsParameters::dynamicParametersCallback,  this, _1)
         );
+    }
+
+    void initialize()
+    {
+        auto node = parent_.lock();
+        min_vel_x_ = node->get_parameter("min_vel_x").as_double();
+        max_vel_x_ = node->get_parameter("max_vel_x").as_double();
+        acc_x_ = node->get_parameter("acc_x").as_double();
+        decel_x_ = node->get_parameter("decel_x").as_double();
+
+        min_vel_y_ = node->get_parameter("min_vel_y").as_double();
+        max_vel_y_ = node->get_parameter("max_vel_y").as_double();
+        acc_y_ = node->get_parameter("acc_y").as_double();
+        decel_y_ = node->get_parameter("decel_y").as_double();
+
+        min_vel_theta_ = node->get_parameter("min_vel_theta").as_double();
+        max_vel_theta_ = node->get_parameter("max_vel_theta").as_double();
+        acc_theta_ = node->get_parameter("acc_theta").as_double();
+        decel_theta_ = node->get_parameter("decel_theta").as_double();
     }
 
     double getMinVelX() {return min_vel_x_;}
@@ -77,6 +83,7 @@ private:
     double min_vel_y_, max_vel_y_, acc_y_, decel_y_;
     double min_vel_theta_, max_vel_theta_, acc_theta_, decel_theta_;
 
+    rclcpp_lifecycle::LifecycleNode::WeakPtr parent_;
     rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr dyn_params_handler_;
 
     rcl_interfaces::msg::SetParametersResult

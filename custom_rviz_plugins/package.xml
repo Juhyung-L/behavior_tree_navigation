@@ -1,18 +1,21 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>simulation_launch</name>
+  <name>custom_rviz_plugins</name>
   <version>0.0.0</version>
-  <description>Launch all packages for simulation</description>
-  <maintainer email="juhyunglee0313@gmail.com">juhyung</maintainer>
-  <license>Apache License 2.0</license>
+  <description>TODO: Package description</description>
+  <maintainer email="juhyunglee0313@gmail.com">root</maintainer>
+  <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <exec_depend>robot_state_publisher</exec_depend>
-  <exec_depend>robot_localization</exec_depend>
-  <exec_depend>nav2_amcl</exec_depend>
-  <exec_depend>nav2_map_server</exec_depend>
+  <depend>rviz_common</depend>
+  <depend>rviz_rendering</depend>
+  <depend>rviz_ogre_vendor</depend>
+  <depend>rviz_default_plugins</depend>
+  
+  <depend>nav_2d_msgs</depend>
+  <depend>pluginlib</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

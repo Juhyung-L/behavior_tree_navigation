@@ -44,13 +44,14 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 
-  # find_package(ament_cmake_gtest REQUIRED)
-  # ament_add_gtest(xytheta_iterator_test test/xytheta_iterator_test.cpp)
-  # ament_target_dependencies(xytheta_iterator_test ${dependencies})
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(xytheta_iterator_test test/xytheta_iterator_test.cpp)
+  ament_target_dependencies(xytheta_iterator_test ${dependencies})
 endif()
 
 INSTALL(TARGETS
   dwa_path_planner
+  xytheta_iterator_test
   DESTINATION lib/${PROJECT_NAME}
 )
 

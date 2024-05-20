@@ -17,10 +17,10 @@ set(dependencies
 )
 
 rosidl_generate_interfaces(nav_2d_msgs
-    "msg/Twist2D.msg"
-    "msg/Path2D.msg"
-    "msg/DWATrajectories.msg"
-    DEPENDENCIES ${dependencies}
+  "msg/Twist2D.msg"
+  "msg/Path2D.msg"
+  "msg/DWATrajectories.msg"
+  DEPENDENCIES ${dependencies}
 )
 
 if(BUILD_TESTING)

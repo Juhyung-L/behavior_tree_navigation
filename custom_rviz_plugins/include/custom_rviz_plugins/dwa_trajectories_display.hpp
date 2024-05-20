@@ -1,5 +1,5 @@
-#ifndef GNC_RVIZ_PLUGINS__DWA_TRAJECTORIES_DISPLAY_HPP_
-#define GNC_RVIZ_PLUGINS__DWA_TRAJECTORIES_DISPLAY_HPP_
+#ifndef CUSTOM_RVIZ_PLUGINS__DWA_TRAJECTORIES_DISPLAY_HPP_
+#define CUSTOM_RVIZ_PLUGINS__DWA_TRAJECTORIES_DISPLAY_HPP_
 
 #include <vector>
 #include <memory>
@@ -24,7 +24,7 @@ class VectorProperty;
 }
 }
 
-namespace gnc_rviz_plugins
+namespace custom_rviz_plugins
 {
 class DWATrajectoriesDisplay : public rviz_common::MessageFilterDisplay<nav_2d_msgs::msg::DWATrajectories>
 {

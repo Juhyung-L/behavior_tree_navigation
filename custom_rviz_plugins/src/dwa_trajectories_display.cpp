@@ -6,9 +6,9 @@
 #include "rviz_common/properties/vector_property.hpp"
 #include "rviz_rendering/material_manager.hpp"
 
-#include "gnc_rviz_plugins/dwa_trajectories_display.hpp"
+#include "custom_rviz_plugins/dwa_trajectories_display.hpp"
 
-namespace gnc_rviz_plugins
+namespace custom_rviz_plugins
 {
 DWATrajectoriesDisplay::DWATrajectoriesDisplay(rviz_common::DisplayContext* display_context)
 : DWATrajectoriesDisplay()
@@ -201,4 +201,4 @@ void DWATrajectoriesDisplay::updateBufferLength()
 }
 
 #include <pluginlib/class_list_macros.hpp>  // NOLINT
-PLUGINLIB_EXPORT_CLASS(gnc_rviz_plugins::DWATrajectoriesDisplay, rviz_common::Display)
+PLUGINLIB_EXPORT_CLASS(custom_rviz_plugins::DWATrajectoriesDisplay, rviz_common::Display)

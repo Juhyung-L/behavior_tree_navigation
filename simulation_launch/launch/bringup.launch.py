@@ -92,13 +92,6 @@ def generate_launch_description():
         parameters=[ekf_config_file_path, 
                     {'use_sim_time': use_sim_time}]
     )
-    keyboard_telelop_node = Node(
-        package='keyboard_teleop',
-        executable='keyboard_teleop',
-        name='keyboard_teleop',
-        output='screen',
-        parameters=[params_file_path]
-    )
 
     # launch nav2 localization
     nav2_localization_launch = IncludeLaunchDescription(
@@ -143,7 +136,6 @@ def generate_launch_description():
         
         robot_localization_node,
         rviz_node,
-        keyboard_telelop_node,
         nav2_localization_launch,
         robot_world_launch,
     ])

@@ -1,21 +1,18 @@
 #include <algorithm>
+#include <string>
 
 #include "lifecycle_msgs/msg/state.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 
 #include "global_path_planner/a_star_node.hpp"
+#include "nav2_util/node_utils.hpp"
 
 namespace a_star
 {
 AStar::AStar(const rclcpp::NodeOptions& options)
 : nav2_util::LifecycleNode("a_star_node", "",options)
 , logger_(this->get_logger())
-{
-    costmap_ros_ = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-        "global_costmap", std::string{get_namespace()}, "global_costmap"
-    );
-    path_.header.frame_id = "map";
-}
+{}
 
 AStar::~AStar()
 {
@@ -27,6 +24,13 @@ AStar::on_configure(const rclcpp_lifecycle::State & /*state*/)
 {
     RCLCPP_INFO(logger_, "Configuring");
 
+    costmap_ros_ = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
+        "global_costmap", std::string{get_namespace()}, "global_costmap"
+    );
+    // common parameter that might be declared multiple times
+    nav2_util::declare_parameter_if_not_declared(shared_from_this(), "odom_frame", rclcpp::ParameterValue(std::string("odom")));
+    path_.header.frame_id = this->get_parameter("odom_frame").as_string();
+    
     costmap_ros_->configure();
     costmap_ = costmap_ros_->getCostmap();
     costmap_thread_ = std::make_unique<nav2_util::NodeThread>(costmap_ros_);

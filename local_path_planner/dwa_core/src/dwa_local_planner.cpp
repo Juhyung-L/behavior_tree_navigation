@@ -11,6 +11,7 @@
 #include "dwa_util/transform_utils.hpp"
 #include "nav_2d_msgs/msg/twist2_d.hpp"
 #include "dwa_critics/base_critic.hpp"
+#include "nav2_util/node_utils.hpp"
 
 using namespace std::chrono_literals;
 using namespace std::placeholders;
@@ -48,19 +49,6 @@ DWALocalPlanner::DWALocalPlanner(rclcpp::NodeOptions node_options)
     this->declare_parameter("time_granularity", rclcpp::ParameterValue(0.5));
     this->declare_parameter("debug", rclcpp::ParameterValue(false));
     this->declare_parameter("critic_names", rclcpp::PARAMETER_STRING_ARRAY);
-
-    odom_topic_ = this->get_parameter("odom_topic").as_string();
-    sim_time_ = this->get_parameter("sim_time").as_double();
-    time_granularity_ = this->get_parameter("time_granularity").as_double();
-    debug_ = this->get_parameter("debug").as_bool();
-    critic_names_ = this->get_parameter("critic_names").as_string_array();
-    costmap_ros_ = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
-        "local_costmap", std::string{get_namespace()}, "local_costmap"
-    );
-    costmap_frame_ = "odom";
-    steps_ = std::ceil(sim_time_ / time_granularity_);
-    global_traj_set_ = false;
-    prev_num_vel_samples_ = 0;
 }
 
 DWALocalPlanner::~DWALocalPlanner()
@@ -73,6 +61,20 @@ DWALocalPlanner::on_configure(const rclcpp_lifecycle::State & /*state*/)
 {
     RCLCPP_INFO(logger_, "Configuring");
     
+    odom_topic_ = this->get_parameter("odom_topic").as_string();
+    sim_time_ = this->get_parameter("sim_time").as_double();
+    time_granularity_ = this->get_parameter("time_granularity").as_double();
+    debug_ = this->get_parameter("debug").as_bool();
+    critic_names_ = this->get_parameter("critic_names").as_string_array();
+    nav2_util::declare_parameter_if_not_declared(shared_from_this(), "odom_frame", rclcpp::ParameterValue(std::string("odom")));
+    costmap_frame_ = this->get_parameter("odom_frame").as_string();
+    steps_ = std::ceil(sim_time_ / time_granularity_);
+    global_traj_set_ = false;
+    prev_num_vel_samples_ = 0;
+
+    costmap_ros_ = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
+        "local_costmap", std::string{get_namespace()}, "local_costmap"
+    );
     costmap_ros_->configure();
     costmap_ = costmap_ros_->getCostmap();
     costmap_thread_ = std::make_unique<nav2_util::NodeThread>(costmap_ros_);
@@ -94,7 +96,7 @@ DWALocalPlanner::on_configure(const rclcpp_lifecycle::State & /*state*/)
     );
 
     kp_ = std::make_shared<KinematicsParameters>(shared_from_this());
-    vel_it_ = XYThetaVelocityIterator(shared_from_this(), kp_);
+    vel_it_ = XYThetaVelocityIterator(shared_from_this());
     tf_buffer_ = std::make_shared<tf2_ros::Buffer>(this->get_clock());
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
@@ -110,6 +112,7 @@ DWALocalPlanner::on_activate(const rclcpp_lifecycle::State & /*state*/)
 {
     RCLCPP_INFO(logger_, "Activating");
 
+    kp_->initialize();
     trajs_pub_->on_activate();
     cmd_vel_pub_->on_activate();
     global_traj_pub_->on_activate();
@@ -231,7 +234,7 @@ void DWALocalPlanner::computeVelocityCommand()
     odom_lock.unlock();
 
     // sample local trajs and score them
-    vel_it_.initialize(current_vel, sim_time_);
+    vel_it_.initialize(current_vel, sim_time_, kp_);
     std::vector<Node> nodes;
     nodes.reserve(prev_num_vel_samples_);
     int i = 0;
