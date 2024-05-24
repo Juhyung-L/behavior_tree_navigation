@@ -7,14 +7,14 @@
 #include "tf2_ros/buffer.h"
 
 #include "bt_navigator/bt_navigator.hpp"
-#include "bt_msgs/action/navigate_to_pose.hpp"
+#include "gnc_msgs/action/navigate_to_pose.hpp"
 
 namespace bt_navigator
 {
-class NavigateToPoseNavigator : public BTNavigator<bt_msgs::action::NavigateToPose>
+class NavigateToPoseNavigator : public BTNavigator<gnc_msgs::action::NavigateToPose>
 {
 public:
-    using ActionT = bt_msgs::action::NavigateToPose;
+    using ActionT = gnc_msgs::action::NavigateToPose;
 
     NavigateToPoseNavigator()
     : BTNavigator()

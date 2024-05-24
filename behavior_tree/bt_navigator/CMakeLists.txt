@@ -16,8 +16,8 @@ find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(nav2_util REQUIRED)
-find_package(bt_msgs REQUIRED)
 find_package(bt_interface REQUIRED)
+find_package(gnc_msgs REQUIRED)
 
 set(dependencies
   rclcpp
@@ -29,8 +29,8 @@ set(dependencies
   geometry_msgs
   ament_index_cpp
   nav2_util
-  bt_msgs
   bt_interface
+  gnc_msgs
 )
 
 include_directories(include)

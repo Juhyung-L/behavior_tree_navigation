@@ -1,11 +1,15 @@
 {
     "python.autoComplete.extraPaths": [
         "/home/dev_ws/install/nav_2d_msgs/local/lib/python3.10/dist-packages",
+        "/home/dev_ws/install/gnc_msgs/local/lib/python3.10/dist-packages",
+        "/home/dev_ws/install/bt_msgs/local/lib/python3.10/dist-packages",
         "/opt/ros/humble/lib/python3.10/site-packages",
         "/opt/ros/humble/local/lib/python3.10/dist-packages"
     ],
     "python.analysis.extraPaths": [
         "/home/dev_ws/install/nav_2d_msgs/local/lib/python3.10/dist-packages",
+        "/home/dev_ws/install/gnc_msgs/local/lib/python3.10/dist-packages",
+        "/home/dev_ws/install/bt_msgs/local/lib/python3.10/dist-packages",
         "/opt/ros/humble/lib/python3.10/site-packages",
         "/opt/ros/humble/local/lib/python3.10/dist-packages"
     ],
