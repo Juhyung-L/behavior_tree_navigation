@@ -7,20 +7,52 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(behaviortree_cpp REQUIRED)
+find_package(nav2_util REQUIRED)
+find_package(gnc_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+
+set(dependencies
+  rclcpp
+  rclcpp_action
+  behaviortree_cpp
+  nav2_util
+  gnc_msgs
+  nav_msgs
+)
+
+include_directories(include)
+
+add_library(follow_path_action_bt_node SHARED plugins/action/follow_path_action.cpp)
+list(APPEND bt_nodes follow_path_action_bt_node)
+
+foreach(bt_node ${bt_nodes})
+  ament_target_dependencies(${bt_node} ${dependencies})
+  target_compile_definitions(${bt_node} PRIVATE BT_PLUGIN_EXPORT)
+endforeach()
+
+install(TARGETS ${bt_nodes}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+install(FILES bt_nodes.xml DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
   set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
-endif()
+  find_package(ament_cmake_gtest REQUIRED)
+  add_subdirectory(test)
+  endif()
 
+install(TARGETS test_follow_path_action
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
+
+ament_export_libraries(${bt_nodes})
+ament_export_dependencies(${dependencies})
 ament_package()

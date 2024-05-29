@@ -20,7 +20,7 @@ set(dependencies
   nav_msgs
 )
 
-rosidl_generate_interfaces(nav_2d_msgs
+rosidl_generate_interfaces(${PROJECT_NAME}
   "action/FollowPath.action"
   "action/ComputePathToPose.action"
   "action/NavigateToPose.action"

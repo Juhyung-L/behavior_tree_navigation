@@ -2,6 +2,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "nav2_costmap_2d/costmap_2d.hpp"
+#include "nav2_util/node_utils.hpp"
 
 #include "dwa_critics/global_path_align.hpp"
 
@@ -16,10 +17,11 @@ GlobalPathAlignCritic::GlobalPathAlignCritic()
 void GlobalPathAlignCritic::on_initialize()
 {
     auto node = parent_.lock();
-    node->declare_parameter(name_ + ".weight", rclcpp::ParameterValue(1.0));
-    weight_ = node->get_parameter(name_ + ".weight").as_double();
-    node->declare_parameter(name_ + ".invert_score", rclcpp::ParameterValue(true));
-    invert_score_ = node->get_parameter(name_ + ".invert_score").as_bool();
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + name_ + ".weight", rclcpp::ParameterValue(1.0));
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + name_ + ".invert_score", rclcpp::ParameterValue(true));
+    
+    weight_ = node->get_parameter(plugin_name_ + "." + name_ + ".weight").as_double();
+    invert_score_ = node->get_parameter(plugin_name_ + "." + name_ + ".invert_score").as_bool();
 
     size_x_ = costmap_->getSizeInCellsX();
     size_y_ = costmap_->getSizeInCellsY();

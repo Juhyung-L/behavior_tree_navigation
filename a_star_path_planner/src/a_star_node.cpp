@@ -4,7 +4,7 @@
 #include "lifecycle_msgs/msg/state.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 
-#include "global_path_planner/a_star_node.hpp"
+#include "a_star_path_planner/a_star_node.hpp"
 #include "nav2_util/node_utils.hpp"
 
 namespace a_star

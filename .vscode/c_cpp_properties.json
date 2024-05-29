@@ -12,7 +12,6 @@
         "/home/dev_ws/install/nav_2d_msgs/include/**",
         "/home/dev_ws/install/bt_navigator/include/**",
         "/home/dev_ws/install/gnc_msgs/include/**",
-        "/home/dev_ws/install/bt_msgs/include/**",
         "/home/dev_ws/install/bt_interface/include/**",
         "/opt/ros/humble/include/**",
         "/home/dev_ws/src/a_star_path_planner/include/**",

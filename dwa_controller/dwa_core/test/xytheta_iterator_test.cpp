@@ -74,12 +74,13 @@ void setParameters(nav2_util::LifecycleNode::SharedPtr nh)
 TEST(package_name, test1)
 {
     std::string correct_twist_filename = "correct_twists.txt";
+    std::string plugin_name = "DWALocalPathPlanenr";
 
     rclcpp::NodeOptions node_options;
     auto nh = std::make_shared<nav2_util::LifecycleNode>("xytheta_iterator_test_node", "", node_options);
     
-    dwa_core::KinematicsParameters::SharedPtr kp = std::make_shared<dwa_core::KinematicsParameters>(nh);
-    dwa_core::XYThetaVelocityIterator vel_it(nh);
+    dwa_core::KinematicsParameters::SharedPtr kp = std::make_shared<dwa_core::KinematicsParameters>(nh, plugin_name);
+    dwa_core::XYThetaVelocityIterator vel_it(nh, plugin_name);
     setParameters(nh);
     kp->initialize();
 

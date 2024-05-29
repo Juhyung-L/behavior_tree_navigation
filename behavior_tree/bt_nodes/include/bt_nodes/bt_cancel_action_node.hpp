@@ -8,7 +8,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "behaviortree_cpp/action_node.h"
 
-namespace bt_interface
+namespace bt_nodes
 {
 template<class ActionT>
 class BTCancelActionNode : public BT::ActionNodeBase

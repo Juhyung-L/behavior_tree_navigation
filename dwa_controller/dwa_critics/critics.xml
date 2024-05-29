@@ -1,6 +1,6 @@
 <class_libraries>
     <library path="dwa_critics">
-        <class type="dwa_critics::GlobalTrajectoryAlignCritic" base_class_type="dwa_critics::BaseCritic">
+        <class type="dwa_critics::GlobalPathAlignCritic" base_class_type="dwa_critics::BaseCritic">
             <description>A critic penalizes that paths that do not align with the global path</description>
         </class>
         <class type="dwa_critics::ObstacleProximityCritic" base_class_type="dwa_critics::BaseCritic">

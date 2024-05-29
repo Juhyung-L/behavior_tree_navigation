@@ -5,13 +5,13 @@
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
+#include "nav2_util/node_utils.hpp"
 
 #include "dwa_core/dwa_local_planner.hpp"
 #include "dwa_util/conversions.hpp"
 #include "dwa_util/transform_utils.hpp"
 #include "nav_2d_msgs/msg/twist2_d.hpp"
 #include "dwa_critics/base_critic.hpp"
-#include "nav2_util/node_utils.hpp"
 
 using namespace std::chrono_literals;
 using namespace std::placeholders;
@@ -41,6 +41,7 @@ struct DebugNode
 DWALocalPlanner::DWALocalPlanner()
 : gnc_core::Controller()
 , critic_loader_("dwa_critics", "dwa_critics::BaseCritic")
+, plugin_name_("DWALocalPlanner")
 {}
 
 void
@@ -50,17 +51,22 @@ DWALocalPlanner::configure(const rclcpp_lifecycle::LifecycleNode::WeakPtr& paren
 {
     auto node = parent.lock();
 
-    sim_time_ = node->get_parameter("sim_time").as_double();
-    time_granularity_ = node->get_parameter("time_granularity").as_double();
-    debug_ = node->get_parameter("debug").as_bool();
-    critic_names_ = node->get_parameter("critic_names").as_string_array();
-    costmap_frame_ = node->get_parameter("costmap_frame").as_string();
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + ".sim_time", rclcpp::ParameterValue(1.5));
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + ".time_granularity", rclcpp::ParameterValue(0.1));
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + ".debug", rclcpp::ParameterValue(false));
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + ".critic_names", 
+        rclcpp::ParameterValue(std::vector<std::string>{"GlobalPathAlign", "ObstacleProximity", "Homing"}));
+
+    sim_time_ = node->get_parameter(plugin_name_ + ".sim_time").as_double();
+    time_granularity_ = node->get_parameter(plugin_name_ + ".time_granularity").as_double();
+    debug_ = node->get_parameter(plugin_name_ + ".debug").as_bool();
+    critic_names_ = node->get_parameter(plugin_name_ + ".critic_names").as_string_array();
+
     steps_ = std::ceil(sim_time_ / time_granularity_);
     global_path_set_ = false;
     prev_num_vel_samples_ = 0;
 
     costmap_ros_ = costmap_ros;
-    costmap_ros_->configure();
     costmap_ = costmap_ros_->getCostmap();
     
     // debug publishers (only publish if debug_ flag is true)
@@ -71,8 +77,8 @@ DWALocalPlanner::configure(const rclcpp_lifecycle::LifecycleNode::WeakPtr& paren
     adjusted_global_path_pub_ = node->create_publisher<nav_msgs::msg::Path>(
         "adjusted_global_path", rclcpp::SystemDefaultsQoS());
 
-    kp_ = std::make_shared<KinematicsParameters>(parent);
-    vel_it_ = XYThetaVelocityIterator(parent);
+    kp_ = std::make_shared<KinematicsParameters>(parent, plugin_name_);
+    vel_it_ = XYThetaVelocityIterator(parent, plugin_name_);
     tf_buffer_ = tf;
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
@@ -90,7 +96,6 @@ void DWALocalPlanner::activate()
     kp_->initialize();
     paths_pub_->on_activate();
     adjusted_global_path_pub_->on_activate();
-    costmap_ros_->activate();
 }
 
 void DWALocalPlanner::deactivate()
@@ -131,11 +136,11 @@ geometry_msgs::msg::Twist DWALocalPlanner::computeVelocityCommand(
     nav_2d_msgs::msg::Path2D global_path_2d = dwa_util::path3Dto2D(global_path);
     nav_2d_msgs::msg::Path2D adjusted_global_path = prepareGlobalPath(global_path_2d);
     nav_2d_msgs::msg::Path2D transformed_global_path;
-    if (!dwa_util::transformPath2D(tf_buffer_, costmap_frame_, adjusted_global_path, transformed_global_path))
+    if (!dwa_util::transformPath2D(tf_buffer_, costmap_ros_->getBaseFrameID(), adjusted_global_path, transformed_global_path))
     {
         return cmd_vel; // failed to transform path
     }
-    transformed_global_path.header.frame_id = costmap_frame_;
+    transformed_global_path.header.frame_id = costmap_ros_->getBaseFrameID();
 
     geometry_msgs::msg::Pose2D goal_pose;
     goal_pose.x = global_path_2d.poses.back().x;
@@ -260,7 +265,7 @@ geometry_msgs::msg::Twist DWALocalPlanner::computeVelocityCommand(
             };
         std::sort(debug_nodes.begin(), debug_nodes.end(), cmp);
         nav_2d_msgs::msg::DWATrajectories paths;
-        paths.header.frame_id = costmap_frame_;
+        paths.header.frame_id = costmap_ros_->getBaseFrameID();
         
         int num_paths_to_print = 10;
         paths.scores.reserve(num_paths_to_print);
@@ -418,7 +423,7 @@ bool DWALocalPlanner::loadCritics(const rclcpp_lifecycle::LifecycleNode::WeakPtr
         dwa_critics::BaseCritic::Ptr critic = critic_loader_.createUniqueInstance(critic_name);
         try
         {
-            critic->initialize(parent, costmap_ros_);
+            critic->initialize(parent, costmap_ros_, plugin_name_);
         }
         catch(const std::exception& e)
         {
@@ -430,3 +435,6 @@ bool DWALocalPlanner::loadCritics(const rclcpp_lifecycle::LifecycleNode::WeakPtr
     return true;
 }
 }
+
+#include "pluginlib/class_list_macros.hpp"
+PLUGINLIB_EXPORT_CLASS(dwa_core::DWALocalPlanner, gnc_core::Controller)

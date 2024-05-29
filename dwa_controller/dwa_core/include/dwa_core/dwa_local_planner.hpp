@@ -84,6 +84,7 @@ private:
     int steps_;
     bool debug_;
     std::string costmap_frame_;
+    std::string plugin_name_;
 
     rclcpp::Logger logger_{rclcpp::get_logger("DWALocalPlanner")};
 

@@ -9,24 +9,23 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "behaviortree_cpp/action_node.h"
 
-namespace bt_interface
+namespace bt_nodes
 {
 template<class ActionT>
 class BTActionNode : public BT::ActionNodeBase
 {
 public:
     BTActionNode(
-        const std::string & xml_tag_name,
-        const std::string & action_name,
-        const BT::NodeConfiguration & conf)
+        const std::string& xml_tag_name,
+        const std::string& action_name,
+        const BT::NodeConfiguration& conf)
     : BT::ActionNodeBase(xml_tag_name, conf), action_name_(action_name), should_send_goal_(true)
     {
         BT::Blackboard::Ptr blackboard = config().blackboard;
 
         node_ = blackboard->get<rclcpp::Node::SharedPtr>("node");
         callback_group_ = node_->create_callback_group(
-            rclcpp::CallbackGroupType::MutuallyExclusive,
-            false);
+            rclcpp::CallbackGroupType::MutuallyExclusive, false);
         // each action node gets its own executor, which means they each get their own thread
         callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
         
@@ -42,20 +41,21 @@ public:
 
         // derived class can set "server_name" and remap the action server name
         std::string remapped_action_name;
-        if (getInput("server_name", remapped_action_name)) {
-        action_name_ = remapped_action_name;
+        if (getInput<std::string>("server_name", remapped_action_name)) 
+        {
+            action_name_ = remapped_action_name;
         }
         createActionClient(action_name_);
 
-        RCLCPP_DEBUG(node_->get_logger(), "\"%s\" BtActionNode initialized", xml_tag_name.c_str());
+        RCLCPP_DEBUG(node_->get_logger(), "\"%s\" BTActionNode initialized", xml_tag_name.c_str());
     }
 
-    BtActionNode() = delete;
+    BTActionNode() = delete;
 
-    virtual ~BtActionNode()
+    virtual ~BTActionNode()
     {}
 
-    void createActionClient(const std::string & action_name)
+    void createActionClient(const std::string& action_name)
     {
         action_client_ = rclcpp_action::create_client<ActionT>(node_, action_name, callback_group_);
 
@@ -92,7 +92,7 @@ public:
     virtual void on_tick()
     {}
 
-    virtual void on_wait_for_result(std::shared_ptr<const typename ActionT::Feedback>/*feedback*/)
+    virtual void on_wait_for_result(std::shared_ptr<const typename ActionT::Feedback> /*feedback*/)
     {}
 
     virtual BT::NodeStatus on_success()
@@ -153,7 +153,7 @@ public:
                 }
             }
 
-            if (rclcpp::ok() && !goal_result_available_) 
+            if (rclcpp::ok() && !goal_result_available_)
             {
                 // user defined callback. May modify the value of goal_updated_
                 on_wait_for_result(feedback_);
@@ -223,7 +223,7 @@ public:
                 status = on_cancelled();
                 break;
             default:
-                throw std::logic_error("BtActionNode::Tick: invalid status value");
+                throw std::logic_error("BTActionNode::Tick: invalid status value");
         }
         goal_handle_.reset();
         return status;

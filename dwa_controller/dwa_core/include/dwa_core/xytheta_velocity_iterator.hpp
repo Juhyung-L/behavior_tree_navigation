@@ -1,6 +1,8 @@
 #ifndef XYTHETA_VELOCITY_ITERATOR_HPP_
 #define XYTHETA_VELOCITY_ITERATOR_HPP_
 
+#include <string>
+
 #include "rclcpp/rclcpp.hpp"
 
 #include "nav_2d_msgs/msg/twist2_d.hpp"
@@ -20,13 +22,14 @@ public:
     XYThetaVelocityIterator()
     {}
 
-    XYThetaVelocityIterator(nav2_util::LifecycleNode::WeakPtr parent)
+    XYThetaVelocityIterator(nav2_util::LifecycleNode::WeakPtr parent, const std::string& plugin_name)
     : parent_(parent)
+    , plugin_name_(plugin_name)
     {
         auto node = parent_.lock();
-        node->declare_parameter("vx_samples", rclcpp::ParameterValue(1));
-        node->declare_parameter("vy_samples", rclcpp::ParameterValue(1));
-        node->declare_parameter("vtheta_samples", rclcpp::ParameterValue(1));
+        node->declare_parameter(plugin_name_ + ".vx_samples", rclcpp::ParameterValue(1));
+        node->declare_parameter(plugin_name_ + ".vy_samples", rclcpp::ParameterValue(1));
+        node->declare_parameter(plugin_name_ + ".vtheta_samples", rclcpp::ParameterValue(1));
     }
 
     void initialize(const nav_2d_msgs::msg::Twist2D& current_vel, double dt, const KinematicsParameters::SharedPtr kp)
@@ -35,13 +38,13 @@ public:
 
         is_finished_ = false;
         x_it_.initialize(current_vel.x, kp->getMinVelX(), kp->getMaxVelX(),
-            kp->getAccX(), kp->getDecelX(), dt, node->get_parameter("vx_samples").as_int()
+            kp->getAccX(), kp->getDecelX(), dt, node->get_parameter(plugin_name_ + ".vx_samples").as_int()
         );
         y_it_.initialize(current_vel.y, kp->getMinVelY(), kp->getMaxVelY(),
-            kp->getAccY(), kp->getDecelY(), dt, node->get_parameter("vy_samples").as_int()
+            kp->getAccY(), kp->getDecelY(), dt, node->get_parameter(plugin_name_ + ".vy_samples").as_int()
         );
         theta_it_.initialize(current_vel.theta, kp->getMinVelTheta(), kp->getMaxVelTheta(),
-            kp->getAccTheta(), kp->getDecelTheta(), dt, node->get_parameter("vtheta_samples").as_int()
+            kp->getAccTheta(), kp->getDecelTheta(), dt, node->get_parameter(plugin_name_ + ".vtheta_samples").as_int()
         );
     }
 
@@ -90,6 +93,7 @@ private:
     bool is_finished_;
 
     rclcpp_lifecycle::LifecycleNode::WeakPtr parent_;
+    std::string plugin_name_;
 
     OneDVelocityIterator x_it_;
     OneDVelocityIterator y_it_;

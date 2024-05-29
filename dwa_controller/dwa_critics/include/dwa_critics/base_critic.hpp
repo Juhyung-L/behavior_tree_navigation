@@ -24,11 +24,13 @@ public:
     virtual ~BaseCritic() = default;
     void initialize(
         nav2_util::LifecycleNode::WeakPtr parent,
-        std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros)
+        std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros,
+        const std::string& plugin_name)
     {
         parent_ = parent;
         costmap_ros_ = costmap_ros;
         costmap_ = costmap_ros->getCostmap();
+        plugin_name_ = plugin_name;
         on_initialize();
     }
 
@@ -50,6 +52,7 @@ protected:
     nav2_costmap_2d::Costmap2D* costmap_;
     nav2_util::LifecycleNode::WeakPtr parent_;
     std::string name_;
+    std::string plugin_name_;
 };
 }
 

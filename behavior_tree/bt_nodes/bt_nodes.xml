@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<root>
+  <TreeNodesModel>
+    <Action ID="FollowPath">
+      <input_port name="path">Path to follow</input_port>
+      <input_port name="server_name">Server name</input_port>
+      <input_port name="server_timeout">Server timeout</input_port>
+    </Action>
+  </TreeNodesModel>
+</root>

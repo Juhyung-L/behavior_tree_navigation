@@ -1,0 +1,3 @@
+ament_add_gtest(test_follow_path_action test_follow_path_action.cpp)
+ament_target_dependencies(test_follow_path_action ${dependencies})
+target_link_libraries(test_follow_path_action follow_path_action_bt_node)

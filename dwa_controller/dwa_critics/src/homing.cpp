@@ -2,6 +2,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "nav2_costmap_2d/costmap_2d.hpp"
+#include "nav2_util/node_utils.hpp"
 
 #include "dwa_critics/homing.hpp"
 
@@ -16,10 +17,11 @@ HomingCritic::HomingCritic()
 void HomingCritic::on_initialize()
 {
     auto node = parent_.lock();
-    node->declare_parameter(name_ + ".weight", rclcpp::ParameterValue(1.0));
-    weight_ = node->get_parameter(name_ + ".weight").as_double();
-    node->declare_parameter(name_ + ".invert_score", rclcpp::ParameterValue(true));
-    invert_score_ = node->get_parameter(name_ + ".invert_score").as_bool();
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + name_ + ".weight", rclcpp::ParameterValue(1.0));
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + name_ + ".invert_score", rclcpp::ParameterValue(true));
+    
+    weight_ = node->get_parameter(plugin_name_ + "." + name_ + ".weight").as_double();
+    invert_score_ = node->get_parameter(plugin_name_ + "." + name_ + ".invert_score").as_bool();
 }
 
 void HomingCritic::prepare(const nav_2d_msgs::msg::Path2D& /*global_path*/, const geometry_msgs::msg::Pose2D& goal_pose)

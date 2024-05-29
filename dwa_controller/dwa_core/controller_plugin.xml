@@ -1,5 +1,5 @@
 <class_libraries>
-  <library path="dwa_core">
+  <library path="dwa_local_planner">
     <class type="dwa_core::DWALocalPlanner" base_class_type="gnc_core::Controller">
       <description></description>
     </class>
