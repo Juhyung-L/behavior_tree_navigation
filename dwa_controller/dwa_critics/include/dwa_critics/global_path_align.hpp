@@ -33,7 +33,7 @@ class GlobalPathAlignCritic : public BaseCritic
 {
 public:
     GlobalPathAlignCritic();
-    void prepare(const nav_2d_msgs::msg::Path2D& global_path, const geometry_msgs::msg::Pose2D& goal_pose) override;
+    void prepare(const nav_2d_msgs::msg::Path2D& global_path) override;
     double scorePath(const nav_2d_msgs::msg::Path2D& local_path) override;
     virtual ~GlobalPathAlignCritic() = default;
 

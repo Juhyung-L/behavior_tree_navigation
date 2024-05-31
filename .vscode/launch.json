@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "source ROS workspace",
             "envFile": "${workspaceFolder}/.env",
-            "program": "/home/dev_ws/install/controller_server/lib/controller_server/controller_server",
+            "program": "/home/dev_ws/install/bt_nodes/lib/bt_nodes/test_follow_path_action",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

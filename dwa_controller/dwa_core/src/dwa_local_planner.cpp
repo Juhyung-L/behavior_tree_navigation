@@ -55,7 +55,7 @@ DWALocalPlanner::configure(const rclcpp_lifecycle::LifecycleNode::WeakPtr& paren
     nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + ".time_granularity", rclcpp::ParameterValue(0.1));
     nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + ".debug", rclcpp::ParameterValue(false));
     nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + ".critic_names", 
-        rclcpp::ParameterValue(std::vector<std::string>{"GlobalPathAlign", "ObstacleProximity", "Homing"}));
+        rclcpp::ParameterValue(std::vector<std::string>{"GlobalPathAlign", "ObstacleProximity", "PathLength"}));
 
     sim_time_ = node->get_parameter(plugin_name_ + ".sim_time").as_double();
     time_granularity_ = node->get_parameter(plugin_name_ + ".time_granularity").as_double();
@@ -63,7 +63,6 @@ DWALocalPlanner::configure(const rclcpp_lifecycle::LifecycleNode::WeakPtr& paren
     critic_names_ = node->get_parameter(plugin_name_ + ".critic_names").as_string_array();
 
     steps_ = std::ceil(sim_time_ / time_granularity_);
-    global_path_set_ = false;
     prev_num_vel_samples_ = 0;
 
     costmap_ros_ = costmap_ros;
@@ -100,7 +99,6 @@ void DWALocalPlanner::activate()
 
 void DWALocalPlanner::deactivate()
 {
-    global_path_set_ = false;
     paths_pub_->on_deactivate();
     adjusted_global_path_pub_->on_deactivate();
 }
@@ -124,7 +122,7 @@ geometry_msgs::msg::Twist DWALocalPlanner::computeVelocityCommand(
     const nav_msgs::msg::Path& global_path)
 {
     geometry_msgs::msg::Twist cmd_vel; // velocity to return
-    if (!global_path_set_)
+    if (global_path.poses.empty())
     {
         return cmd_vel;
     }
@@ -136,18 +134,15 @@ geometry_msgs::msg::Twist DWALocalPlanner::computeVelocityCommand(
     nav_2d_msgs::msg::Path2D global_path_2d = dwa_util::path3Dto2D(global_path);
     nav_2d_msgs::msg::Path2D adjusted_global_path = prepareGlobalPath(global_path_2d);
     nav_2d_msgs::msg::Path2D transformed_global_path;
-    if (!dwa_util::transformPath2D(tf_buffer_, costmap_ros_->getBaseFrameID(), adjusted_global_path, transformed_global_path))
+    if (!dwa_util::transformPath2D(tf_buffer_, costmap_ros_->getGlobalFrameID(), adjusted_global_path, transformed_global_path))
     {
         return cmd_vel; // failed to transform path
     }
-    transformed_global_path.header.frame_id = costmap_ros_->getBaseFrameID();
-
-    geometry_msgs::msg::Pose2D goal_pose;
-    goal_pose.x = global_path_2d.poses.back().x;
-    goal_pose.y = global_path_2d.poses.back().y;
+    transformed_global_path.header.frame_id = costmap_ros_->getGlobalFrameID();
+    
     for (auto& critic : critics_)
     {
-        critic->prepare(transformed_global_path, goal_pose);
+        critic->prepare(transformed_global_path);
     }
 
     if (debug_)
@@ -265,7 +260,7 @@ geometry_msgs::msg::Twist DWALocalPlanner::computeVelocityCommand(
             };
         std::sort(debug_nodes.begin(), debug_nodes.end(), cmp);
         nav_2d_msgs::msg::DWATrajectories paths;
-        paths.header.frame_id = costmap_ros_->getBaseFrameID();
+        paths.header.frame_id = costmap_ros_->getGlobalFrameID();
         
         int num_paths_to_print = 10;
         paths.scores.reserve(num_paths_to_print);

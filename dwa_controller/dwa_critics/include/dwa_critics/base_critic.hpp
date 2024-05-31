@@ -37,11 +37,8 @@ public:
     virtual void reset() {}
     /**
      * @param global_path Global path inside of the local costmap
-     * @param goal_pose Final pose on the global path (can be outside of the local costmap)
-     * @brief The parameters provide exhaustive information about the global path
-     * and the derived classes might not require all of them
     */
-    virtual void prepare(const nav_2d_msgs::msg::Path2D& global_path, const geometry_msgs::msg::Pose2D& goal_pose) = 0;
+    virtual void prepare(const nav_2d_msgs::msg::Path2D& global_path) = 0;
     virtual double scorePath(const nav_2d_msgs::msg::Path2D& local_path) = 0;
     double weight_;
     bool invert_score_;

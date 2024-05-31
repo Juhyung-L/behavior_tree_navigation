@@ -28,6 +28,21 @@ void FollowPathAction::on_wait_for_result(
         goal_updated_ = true;
     }
 }
+
+BT::NodeStatus FollowPathAction::on_success()
+{
+    return BT::NodeStatus::SUCCESS; 
+}
+
+BT::NodeStatus FollowPathAction::on_aborted()
+{
+    return BT::NodeStatus::FAILURE; 
+}
+
+BT::NodeStatus FollowPathAction::on_cancelled()
+{
+    return BT::NodeStatus::SUCCESS; 
+}
 }
 
 #include "behaviortree_cpp/bt_factory.h"

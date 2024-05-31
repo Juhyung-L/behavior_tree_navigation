@@ -11,12 +11,12 @@ void GoalChecker::initialize(const rclcpp_lifecycle::LifecycleNode::WeakPtr& par
     auto node = parent.lock();
 
     nav2_util::declare_parameter_if_not_declared(
-        node, name_ + ".xy_tolerance", rclcpp::ParameterValue(0.25));
+        node, name_ + ".GoalChecker.xy_tolerance", rclcpp::ParameterValue(0.25));
     nav2_util::declare_parameter_if_not_declared(
-        node, name_ + ".yaw_tolerance", rclcpp::ParameterValue(0.25));
+        node, name_ + ".GoalChecker.yaw_tolerance", rclcpp::ParameterValue(0.25));
     
-    xy_tolerance_ = node->get_parameter(name_ + ".xy_tolerance").as_double();
-    yaw_tolerance_ = node->get_parameter(name_ + ".yaw_tolerance").as_double();
+    xy_tolerance_ = node->get_parameter(name_ + ".GoalChecker.xy_tolerance").as_double();
+    yaw_tolerance_ = node->get_parameter(name_ + ".GoalChecker.yaw_tolerance").as_double();
     xy_tolerance_sq_ = xy_tolerance_ * xy_tolerance_;
 }
 

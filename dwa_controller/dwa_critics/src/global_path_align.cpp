@@ -27,7 +27,7 @@ void GlobalPathAlignCritic::on_initialize()
     size_y_ = costmap_->getSizeInCellsY();
 }
 
-void GlobalPathAlignCritic::prepare(const nav_2d_msgs::msg::Path2D& global_path, const geometry_msgs::msg::Pose2D& /*goal_pose*/)
+void GlobalPathAlignCritic::prepare(const nav_2d_msgs::msg::Path2D& global_path)
 {
     makeAlignmentMap(global_path);
 }

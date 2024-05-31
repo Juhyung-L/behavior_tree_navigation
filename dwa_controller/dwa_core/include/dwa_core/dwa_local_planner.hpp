@@ -65,7 +65,6 @@ private:
     std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros_;
     nav2_costmap_2d::Costmap2D* costmap_;
 
-    bool global_path_set_{false};
     nav_msgs::msg::Path global_path_;
 
     rclcpp_lifecycle::LifecyclePublisher<nav_2d_msgs::msg::DWATrajectories>::SharedPtr paths_pub_;
@@ -83,7 +82,6 @@ private:
     double time_granularity_;
     int steps_;
     bool debug_;
-    std::string costmap_frame_;
     std::string plugin_name_;
 
     rclcpp::Logger logger_{rclcpp::get_logger("DWALocalPlanner")};

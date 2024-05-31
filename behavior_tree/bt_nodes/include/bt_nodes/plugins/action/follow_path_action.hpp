@@ -15,6 +15,9 @@ public:
         const BT::NodeConfiguration& conf);
 
     void on_tick() override;
+    BT::NodeStatus on_success() override;
+    BT::NodeStatus on_aborted() override;
+    BT::NodeStatus on_cancelled() override;
 
     void on_wait_for_result(
         std::shared_ptr<const gnc_msgs::action::FollowPath::Feedback> feedback) override;

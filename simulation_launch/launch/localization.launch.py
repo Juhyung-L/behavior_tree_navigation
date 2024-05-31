@@ -19,7 +19,10 @@ def generate_launch_description():
     intial_pose_y = LaunchConfiguration('initial_pose.y')
     intial_pose_yaw = LaunchConfiguration('initial_pose.yaw')
 
-    lifecycle_nodes = ['map_server', 'amcl', 'controller_server']
+    lifecycle_nodes = ['map_server', 
+        'amcl', 
+        'controller_server'
+    ]
 
     remappings = [('/tf', 'tf'),
                   ('/tf_static', 'tf_static')]
@@ -72,16 +75,15 @@ def generate_launch_description():
     
     declare_initial_pose_x = DeclareLaunchArgument(
         'initial_pose.x', default_value='0.0',
-        description='Initial x position of robot for nav2_amcl'
-    )
+        description='Initial x position of robot for nav2_amcl')
+    
     declare_initial_pose_y = DeclareLaunchArgument(
         'initial_pose.y', default_value='0.0',
-        description='Initial y position of robot for nav2_amcl'
-    )
+        description='Initial y position of robot for nav2_amcl')
+    
     declare_initial_pose_yaw = DeclareLaunchArgument(
         'initial_pose.yaw', default_value='0.0',
-        description='Initial yaw orientation of robot for nav2_amcl'
-    )
+        description='Initial yaw orientation of robot for nav2_amcl')
 
     load_nodes = GroupAction(
         actions=[
@@ -118,8 +120,7 @@ def generate_launch_description():
                 respawn=use_respawn,
                 respawn_delay=2.0,
                 parameters=[configured_params],
-                arguments=['--ros-args', '--log-level', log_level],
-            ),
+                arguments=['--ros-args', '--log-level', log_level]),
             Node(
                 package='nav2_lifecycle_manager',
                 executable='lifecycle_manager',

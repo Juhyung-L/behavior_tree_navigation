@@ -23,7 +23,7 @@ void ObstacleProximityCritic::on_initialize()
     invert_score_ = node->get_parameter(plugin_name_ + "." + name_ + ".invert_score").as_bool();
 }
 
-void ObstacleProximityCritic::prepare(const nav_2d_msgs::msg::Path2D& /*globa_traj*/, const geometry_msgs::msg::Pose2D& /*goal_pose*/)
+void ObstacleProximityCritic::prepare(const nav_2d_msgs::msg::Path2D& /*globa_traj*/)
 {}
 
 double ObstacleProximityCritic::scorePath(const nav_2d_msgs::msg::Path2D& local_traj)

@@ -51,6 +51,8 @@ ControllerServer::on_configure(const rclcpp_lifecycle::State& /*state*/)
         true);
     goal_checker_ = std::make_unique<GoalChecker>();
     progress_checker_ = std::make_unique<ProgressChecker>();
+    goal_checker_->initialize(node);
+    progress_checker_->initialize(node);
 
     cmd_vel_pub_ = create_publisher<geometry_msgs::msg::Twist>(
         "cmd_vel", rclcpp::SystemDefaultsQoS());
@@ -80,6 +82,7 @@ ControllerServer::on_activate(const rclcpp_lifecycle::State& /*state*/)
     costmap_ros_->activate();
     controller_->activate();
     cmd_vel_pub_->on_activate();
+    action_server_->activate();
 
     createBond();
     return nav2_util::CallbackReturn::SUCCESS;
@@ -93,6 +96,7 @@ ControllerServer::on_deactivate(const rclcpp_lifecycle::State& /*state*/)
     costmap_ros_->deactivate();
     controller_->deactivate();
     cmd_vel_pub_->on_deactivate();
+    action_server_->deactivate();
 
     destroyBond();
     return nav2_util::CallbackReturn::SUCCESS;
@@ -123,7 +127,7 @@ ControllerServer::on_shutdown(const rclcpp_lifecycle::State& /*state*/)
 
 void ControllerServer::executeController()
 {
-    progress_checker_.reset();
+    progress_checker_->reset();
     rclcpp::WallRate loop_rate(controller_frequency_);
     while (rclcpp::ok())
     {
@@ -131,6 +135,7 @@ void ControllerServer::executeController()
         if (action_server_->is_cancel_requested())
         {
             action_server_->terminate_all();
+            publishZeroVelocity();
             return;
         }
 
@@ -152,6 +157,7 @@ void ControllerServer::executeController()
         {
             RCLCPP_ERROR(logger_, "Failed to get robot pose");
             action_server_->terminate_current();
+            publishZeroVelocity();
             return;
         }
 
@@ -160,6 +166,7 @@ void ControllerServer::executeController()
         {
             RCLCPP_ERROR(logger_, "Failed to progress towards goal");
             action_server_->terminate_current();
+            publishZeroVelocity();
             return;
         }
         
@@ -169,7 +176,9 @@ void ControllerServer::executeController()
         if (goal_checker_->isGoalReached(cur_pose.pose, goal_pose))
         {
             RCLCPP_INFO(logger_, "Goal reached");
-            break;
+            publishZeroVelocity();
+            action_server_->succeeded_current();
+            return;
         }
         geometry_msgs::msg::Twist cur_vel = odom_smoother_->getTwist();
 
@@ -185,7 +194,6 @@ void ControllerServer::executeController()
                 controller_frequency_);
         }
     }
-    action_server_->succeeded_current();
 }
 
 void ControllerServer::publishFeedback(
@@ -211,5 +219,17 @@ void ControllerServer::publishFeedback(
     feedback->distance_to_goal = nav2_util::geometry_utils::calculate_path_length(
         global_path, closest_pose_idx);
     action_server_->publish_feedback(feedback);
+}
+
+void ControllerServer::publishZeroVelocity()
+{
+    geometry_msgs::msg::Twist zero_vel;
+    zero_vel.linear.x = 0.0;
+    zero_vel.linear.y = 0.0;
+    zero_vel.linear.z = 0.0;
+    zero_vel.angular.x = 0.0;
+    zero_vel.angular.y = 0.0;
+    zero_vel.angular.z = 0.0;
+    cmd_vel_pub_->publish(std::move(zero_vel));
 }
 }

@@ -60,6 +60,7 @@ private:
         const geometry_msgs::msg::Pose& current_pose,
         const geometry_msgs::msg::Twist& current_velocity,
         const nav_msgs::msg::Path& global_path);
+    void publishZeroVelocity();
 };
 }
 

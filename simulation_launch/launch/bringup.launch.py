@@ -93,21 +93,6 @@ def generate_launch_description():
                     {'use_sim_time': use_sim_time}]
     )
 
-    # launch nav2 localization
-    nav2_localization_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(pkg_share, 'launch', 'localization.launch.py')
-        ),
-        launch_arguments={
-            'use_sim_time': use_sim_time,
-            'map': map_yaml_file,
-            'params_file': params_file,
-            'initial_pose.x': x_spawn,
-            'initial_pose.y': y_spawn,
-            'initial_pose.yaw': yaw_spawn
-        }.items()
-    )
-
     # launch other launch files
     robot_world_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -120,6 +105,21 @@ def generate_launch_description():
             'use_sim_time': use_sim_time,
             'robot_model_file': robot_model_file,
             'world_file': world_file
+        }.items()
+    )
+
+    # launch nav2 localization
+    nav2_localization_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_share, 'launch', 'localization.launch.py')
+        ),
+        launch_arguments={
+            'use_sim_time': use_sim_time,
+            'map': map_yaml_file,
+            'params_file': params_file,
+            'initial_pose.x': x_spawn,
+            'initial_pose.y': y_spawn,
+            'initial_pose.yaw': yaw_spawn
         }.items()
     )
 
@@ -136,6 +136,6 @@ def generate_launch_description():
         
         robot_localization_node,
         rviz_node,
-        nav2_localization_launch,
         robot_world_launch,
+        nav2_localization_launch
     ])
