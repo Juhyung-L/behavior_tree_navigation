@@ -41,8 +41,9 @@ struct DebugNode
 DWALocalPlanner::DWALocalPlanner()
 : gnc_core::Controller()
 , critic_loader_("dwa_critics", "dwa_critics::BaseCritic")
-, plugin_name_("DWALocalPlanner")
-{}
+{
+    plugin_name_ = "DWALocalPlanner";
+}
 
 void
 DWALocalPlanner::configure(const rclcpp_lifecycle::LifecycleNode::WeakPtr& parent,

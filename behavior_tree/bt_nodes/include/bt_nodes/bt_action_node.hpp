@@ -195,10 +195,10 @@ public:
                 }
             }
        }
-       catch (const std::runtime_error& e) 
+       catch (const std::runtime_error& ex) 
        {
-            if (e.what() == std::string("send_goal failed") ||
-                e.what() == std::string("Goal was rejected by the action server"))
+            if (ex.what() == std::string("send_goal failed") ||
+                ex.what() == std::string("Goal was rejected by the action server"))
             {
                 // action related failure that should not fail the tree, but the node
                 return BT::NodeStatus::FAILURE;
@@ -206,7 +206,7 @@ public:
             else 
             {
                 // internal exception to propagate to the tree
-                throw e;
+                throw ex;
             }
         }
 

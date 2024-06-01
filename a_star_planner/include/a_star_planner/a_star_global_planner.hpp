@@ -1,5 +1,5 @@
-#ifndef A_STAR_NODE_HPP_
-#define A_STAR_NODE_HPP_
+#ifndef A_STAR_GLOBAL_PLANNER_HPP_
+#define A_STAR_GLOBAL_PLANNER_HPP_
 
 #include <memory>
 #include <chrono>
@@ -10,13 +10,13 @@
 #include "nav_msgs/msg/path.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "nav2_costmap_2d/costmap_2d_ros.hpp"
-#include "nav2_util/lifecycle_node.hpp"
-#include "rclcpp_lifecycle/lifecycle_publisher.hpp"
+
+#include "gnc_core/planner.hpp"
 
 using namespace std::chrono_literals;
 using namespace std::placeholders;
 
-namespace a_star
+namespace a_star_planner
 {
 const double LETHAL_OBSTACLE{static_cast<double>(nav2_costmap_2d::LETHAL_OBSTACLE)};
 
@@ -54,43 +54,36 @@ struct cmp
     }
 };
 
-/**
- * @class AStar
- * @brief A ROS node that finds the path to a goal pose from the robot's current pose
-*/
-
-class AStar : public nav2_util::LifecycleNode
+class AStarGlobalPlanner : public gnc_core::Planner
 {
 public:
-    explicit AStar(const rclcpp::NodeOptions& options = rclcpp::NodeOptions());
-    ~AStar();
-
-protected:
-    nav2_util::CallbackReturn on_configure(const rclcpp_lifecycle::State & state) override;
-    nav2_util::CallbackReturn on_activate(const rclcpp_lifecycle::State & state) override;
-    nav2_util::CallbackReturn on_deactivate(const rclcpp_lifecycle::State & state) override;
-    nav2_util::CallbackReturn on_cleanup(const rclcpp_lifecycle::State & state) override;
-    nav2_util::CallbackReturn on_shutdown(const rclcpp_lifecycle::State & state) override;
+    explicit AStarGlobalPlanner();
+    ~AStarGlobalPlanner();
+    void configure(
+        const rclcpp_lifecycle::LifecycleNode::WeakPtr& parent,
+        std::shared_ptr<tf2_ros::Buffer> tf,
+        std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros) override;
+    void activate() override;
+    void deactivate() override;
+    void cleanup() override;
+    nav_msgs::msg::Path computePath(
+        const geometry_msgs::msg::PoseStamped& start,
+        const geometry_msgs::msg::PoseStamped& goal) override;
 
 private:
     std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros_;
-    std::unique_ptr<nav2_util::NodeThread> costmap_thread_;
-    nav2_costmap_2d::Costmap2D * costmap_;
+    nav2_costmap_2d::Costmap2D* costmap_;
     int size_x_;
     int size_y_;
     int prev_size_x_{0};
     int prev_size_y_{0};
 
-    rclcpp_lifecycle::LifecyclePublisher<nav_msgs::msg::Path>::SharedPtr path_pub_;
-    rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr goal_sub_;
+    rclcpp::Logger logger_{rclcpp::get_logger("AStarGlobalPlanner")};
+    rclcpp::Clock::SharedPtr clock_;
 
-    rclcpp::TimerBase::SharedPtr timer_;
-    rclcpp::Logger logger_;
-
-    coordMap goal_;
-    coordMap src_;
+    coordMap start_m_;
+    coordMap goal_m_;
     nav_msgs::msg::Path path_;
-    bool goal_received_;
 
     // a* star stuff
     std::priority_queue<AStarNode*, std::vector<AStarNode*>, cmp> q_;
@@ -98,8 +91,6 @@ private:
     std::vector<AStarNode>::iterator node_pool_it_;
     std::vector<AStarNode*> node_grid_;
 
-    void goalCB(const geometry_msgs::msg::PoseStamped goal);
-    void computePath();
     void resetNodes();
     void getNeighbors(AStarNode* cur_node);
     void backtrace(AStarNode* cur_node);
@@ -121,7 +112,7 @@ private:
 
     double getHCost(const int x, const int y)
     {
-        return std::hypot(x - goal_.x, y - goal_.y);
+        return std::hypot(goal_m_.x - x, goal_m_.y - y);
     }
 };
 }

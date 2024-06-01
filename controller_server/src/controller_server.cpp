@@ -6,11 +6,10 @@
 
 namespace controller_server
 {
-ControllerServer::ControllerServer(const rclcpp::NodeOptions & options)
+ControllerServer::ControllerServer(const rclcpp::NodeOptions& options)
 : nav2_util::LifecycleNode("controller_server", "", options)
 , controller_loader_("gnc_core", "gnc_core::Controller")
 , controller_type_("dwa_core::DWALocalPlanner")
-, odom_topic_("odom")
 , logger_(get_logger())
 {
     RCLCPP_INFO(logger_, "Creating controller server");
@@ -127,6 +126,8 @@ ControllerServer::on_shutdown(const rclcpp_lifecycle::State& /*state*/)
 
 void ControllerServer::executeController()
 {
+    auto goal = action_server_->get_current_goal();
+
     progress_checker_->reset();
     rclcpp::WallRate loop_rate(controller_frequency_);
     while (rclcpp::ok())
@@ -171,7 +172,7 @@ void ControllerServer::executeController()
         }
         
         // last pose of global path is the goal
-        const nav_msgs::msg::Path& global_path = action_server_->get_current_goal()->path;
+        const nav_msgs::msg::Path& global_path = goal->path;
         geometry_msgs::msg::Pose goal_pose = global_path.poses.back().pose;
         if (goal_checker_->isGoalReached(cur_pose.pose, goal_pose))
         {
@@ -185,7 +186,7 @@ void ControllerServer::executeController()
         // compute velocity command
         geometry_msgs::msg::Twist cmd_vel = controller_->computeVelocityCommand(
             cur_pose.pose, cur_vel, global_path);
-        cmd_vel_pub_->publish(std::move(cmd_vel));
+        cmd_vel_pub_->publish(cmd_vel);
         publishFeedback(cur_pose.pose, cmd_vel, global_path);
 
         if (!loop_rate.sleep())

@@ -26,7 +26,6 @@ public:
     using Ptr = std::shared_ptr<gnc_core::Controller>;
 
     virtual ~Controller() {}
-
     virtual void configure(const rclcpp_lifecycle::LifecycleNode::WeakPtr& parent,
         std::shared_ptr<tf2_ros::Buffer> tf,
         std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros) = 0;
@@ -39,6 +38,9 @@ public:
         const geometry_msgs::msg::Pose&  current_pose,
         const geometry_msgs::msg::Twist& current_velocity,
         const nav_msgs::msg::Path& global_path) = 0;
+
+protected:
+    std::string plugin_name_;
 };
 }
 

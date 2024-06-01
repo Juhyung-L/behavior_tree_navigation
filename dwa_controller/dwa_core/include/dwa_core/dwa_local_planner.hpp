@@ -45,15 +45,12 @@ class DWALocalPlanner : public gnc_core::Controller
 public:
     explicit DWALocalPlanner();
     ~DWALocalPlanner();
-
-protected:
     void configure(const rclcpp_lifecycle::LifecycleNode::WeakPtr& parent,
         std::shared_ptr<tf2_ros::Buffer> tf,
         std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros) override;
     void activate() override;
     void deactivate() override;
     void cleanup() override;
-
     geometry_msgs::msg::Twist computeVelocityCommand(
         const geometry_msgs::msg::Pose& current_pose,
         const geometry_msgs::msg::Twist& current_velocity,
@@ -82,7 +79,6 @@ private:
     double time_granularity_;
     int steps_;
     bool debug_;
-    std::string plugin_name_;
 
     rclcpp::Logger logger_{rclcpp::get_logger("DWALocalPlanner")};
 

@@ -1,0 +1,7 @@
+<class_libraries>
+  <library path="a_star_global_planner">
+    <class type="a_star_planner::AStarGlobalPlanner" base_class_type="gnc_core::Planner">
+      <description></description>
+    </class>
+  </library>
+</class_libraries>

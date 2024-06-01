@@ -6,15 +6,17 @@
         "limitSymbolsToIncludedHeaders": false
       },
       "includePath": [
+        "/home/dev_ws/install/dwa_core/include/**",
         "/home/dev_ws/install/dwa_util/include/**",
         "/home/dev_ws/install/dwa_critics/include/**",
         "/home/dev_ws/install/custom_rviz_plugins/include/**",
         "/home/dev_ws/install/nav_2d_msgs/include/**",
         "/home/dev_ws/install/bt_navigator/include/**",
         "/home/dev_ws/install/gnc_msgs/include/**",
+        "/home/dev_ws/install/gnc_core/include/**",
         "/home/dev_ws/install/bt_interface/include/**",
         "/opt/ros/humble/include/**",
-        "/home/dev_ws/src/a_star_path_planner/include/**",
+        "/home/dev_ws/src/a_star_planner/include/**",
         "/home/dev_ws/src/behavior_tree/bt_interface/include/**",
         "/home/dev_ws/src/behavior_tree/bt_navigator/include/**",
         "/home/dev_ws/src/behavior_tree/bt_nodes/include/**",
