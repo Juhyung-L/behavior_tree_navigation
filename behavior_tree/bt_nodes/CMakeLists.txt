@@ -28,6 +28,9 @@ include_directories(include)
 add_library(follow_path_action_bt_node SHARED plugins/action/follow_path_action.cpp)
 list(APPEND bt_nodes follow_path_action_bt_node)
 
+add_library(compute_path_to_pose_action_bt_node SHARED plugins/action/compute_path_to_pose_action.cpp)
+list(APPEND bt_nodes compute_path_to_pose_action_bt_node)
+
 foreach(bt_node ${bt_nodes})
   ament_target_dependencies(${bt_node} ${dependencies})
   target_compile_definitions(${bt_node} PRIVATE BT_PLUGIN_EXPORT)
@@ -48,10 +51,6 @@ if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   add_subdirectory(test)
   endif()
-
-install(TARGETS test_follow_path_action
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
-)
 
 ament_export_libraries(${bt_nodes})
 ament_export_dependencies(${dependencies})

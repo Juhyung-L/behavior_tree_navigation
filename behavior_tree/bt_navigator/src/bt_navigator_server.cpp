@@ -1,4 +1,4 @@
-#include "bt_navigator/bt_navigator_node.hpp"
+#include "bt_navigator/bt_navigator_server.hpp"
 
 /**
  * ROS parameters declared
@@ -11,23 +11,23 @@
 
 namespace bt_navigator
 {
-BTNavigatorNode::BTNavigatorNode(rclcpp::NodeOptions options)
+BTNavigatorServer::BTNavigatorServer(rclcpp::NodeOptions options)
 : nav2_util::LifecycleNode("bt_navigator", "", options)
-, class_loader_("bt_navigator", "bt_navigator::BTNavigatorBase")
+, class_loader_("gnc_core", "gnc_core::BTNavigatorBase")
 {
     declare_parameter("global_frame", "map");
     declare_parameter("robot_frame", "base_link");
     declare_parameter("transform_tolerance", 0.1);
     declare_parameter("odom_topic", "odom");
     declare_parameter("plugin_lib_names", rclcpp::ParameterValue(std::vector<std::string>{}));
-    declare_parameter("navigator_type", "");
+    declare_parameter("navigator_type", "bt_navigator::NavigateToPoseNavigator");
 }
 
-BTNavigatorNode::~BTNavigatorNode()
+BTNavigatorServer::~BTNavigatorServer()
 {}
 
 nav2_util::CallbackReturn
-BTNavigatorNode::on_configure(const rclcpp_lifecycle::State& /*state*/)
+BTNavigatorServer::on_configure(const rclcpp_lifecycle::State& /*state*/)
 {
     RCLCPP_INFO(get_logger(), "Configuring");
 
@@ -69,7 +69,7 @@ BTNavigatorNode::on_configure(const rclcpp_lifecycle::State& /*state*/)
 }
 
 nav2_util::CallbackReturn
-BTNavigatorNode::on_activate(const rclcpp_lifecycle::State& /*state*/)
+BTNavigatorServer::on_activate(const rclcpp_lifecycle::State& /*state*/)
 {
     RCLCPP_INFO(get_logger(), "Activating");
 
@@ -83,7 +83,7 @@ BTNavigatorNode::on_activate(const rclcpp_lifecycle::State& /*state*/)
 }
 
 nav2_util::CallbackReturn
-BTNavigatorNode::on_deactivate(const rclcpp_lifecycle::State& /*state*/)
+BTNavigatorServer::on_deactivate(const rclcpp_lifecycle::State& /*state*/)
 {
     RCLCPP_INFO(get_logger(), "Deactivating");
     if (!navigator_->on_deactivate())
@@ -96,7 +96,7 @@ BTNavigatorNode::on_deactivate(const rclcpp_lifecycle::State& /*state*/)
 }
 
 nav2_util::CallbackReturn
-BTNavigatorNode::on_cleanup(const rclcpp_lifecycle::State& /*state*/)
+BTNavigatorServer::on_cleanup(const rclcpp_lifecycle::State& /*state*/)
 {
     RCLCPP_INFO(get_logger(), "Cleaning up");
     tf_listener_.reset();
@@ -107,7 +107,7 @@ BTNavigatorNode::on_cleanup(const rclcpp_lifecycle::State& /*state*/)
 }
 
 nav2_util::CallbackReturn
-BTNavigatorNode::on_shutdown(const rclcpp_lifecycle::State& /*state*/)
+BTNavigatorServer::on_shutdown(const rclcpp_lifecycle::State& /*state*/)
 {
     RCLCPP_INFO(get_logger(), "Shutting down");
     return nav2_util::CallbackReturn::SUCCESS;

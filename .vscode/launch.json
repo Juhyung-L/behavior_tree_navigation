@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "source ROS workspace",
             "envFile": "${workspaceFolder}/.env",
-            "program": "/home/dev_ws/install/bt_nodes/lib/bt_nodes/test_follow_path_action",
+            "program": "/home/dev_ws/install/bt_nodes/lib/bt_nodes/test_compute_path_to_pose_action",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
@@ -34,7 +34,7 @@
             "name": "(gdb) Attach",
             "type": "cppdbg",
             "request": "attach",
-            "program": "/home/dev_ws/install/dwa_core/lib/dwa_core/dwa_path_planner",
+            "program": "/home/dev_ws/install/planner_server/lib/planner_server/planner_server",
             "processId": "${command:pickProcess}",
             "MIMode": "gdb",
             "setupCommands": [

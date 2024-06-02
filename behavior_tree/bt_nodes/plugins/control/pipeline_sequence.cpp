@@ -14,12 +14,16 @@ PipelineSequence::PipelineSequence(
 : BT::ControlNode(name, config)
 {}
 
-// this node ticks the children in sequence
-// if any child returns FAILURE, reset all children's state to IDLE (haltChildren() does this) and return SUCCESS
-// if a child returns SUCCESS, just continue onto the next child
-// - if the last child returns SUCCESS, reset all children (with haltChildren()) and return SUCCESS
-// if a child returns RUNNING, don't tick the next child and return RUNNING
-// if all children returned SKIPPED, return SKIPPED
+/**
+ * this node ticks the children in sequence
+ * if any child returns FAILURE, stop all children (using haltChildren()) and return FAILURE
+ * if a child returns SUCCESS, continue onto the next child
+ * - if the last child returns SUCCESS, stop all children and return SUCCESS
+ * if a child returns RUNNING, don't tick the next child and return RUNNING
+ * if all children returned SKIPPED, return SKIPPED
+ * Basically, this node executes its children, but only if the previous child returns SUCCESS.
+ * If any child fails, immediately return FAILURE
+*/
 BT::NodeStatus PipelineSequence::tick()
 {
     unsigned skipped_count = 0;

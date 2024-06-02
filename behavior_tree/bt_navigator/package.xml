@@ -21,8 +21,9 @@
   <depend>geometry_msgs</depend>
   <depend>ament_index_cpp</depend>
   <depend>nav2_util</depend>
-  <depend>gnc_msgs</depend>
   <depend>bt_interface</depend>
+  <depend>gnc_msgs</depend>
+  <depend>gnc_core</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

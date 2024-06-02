@@ -2,7 +2,7 @@
 	<library path="navigate_to_pose_navigator">
     <class
       type="bt_navigator::NavigateToPoseNavigator"
-      base_class_type="bt_navigator::BTNavigatorBase">
+      base_class_type="gnc_core::BTNavigatorBase">
       <description>Navigate to Pose Navigator</description>
     </class>
 	</library>

@@ -66,7 +66,7 @@ PlannerServer::on_activate(const rclcpp_lifecycle::State& /*state*/)
 
     costmap_ros_->activate();
     planner_->activate();
-    path_pub_->is_activated();
+    path_pub_->on_activate();
     action_server_->activate();
 
     createBond();

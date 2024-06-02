@@ -1,3 +1,13 @@
 ament_add_gtest(test_follow_path_action test_follow_path_action.cpp)
 ament_target_dependencies(test_follow_path_action ${dependencies})
 target_link_libraries(test_follow_path_action follow_path_action_bt_node)
+
+ament_add_gtest(test_compute_path_to_pose_action test_compute_path_to_pose_action.cpp)
+ament_target_dependencies(test_compute_path_to_pose_action ${dependencies})
+target_link_libraries(test_compute_path_to_pose_action compute_path_to_pose_action_bt_node)
+
+install(TARGETS 
+  test_follow_path_action
+  test_compute_path_to_pose_action
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
+)

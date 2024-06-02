@@ -3,6 +3,12 @@
 
 #include "a_star_planner/a_star_global_planner.hpp"
 
+/**
+ * The A* search stops on either the goal cell or any cell with unknown occupancy (nav2_costmap_2d::NO_INFORMATION) 
+ * and it puts any unoccupied cell (<nav2_costmap_2d::MAX_NON_OBSTACLE) into the priority queue to be searched.
+ * This means if the goal is inside an obstacle, the path will not be found. But if the goal is inside a
+ * cell with unknown occupancy, the path will be found up to the known cells.
+*/
 namespace a_star_planner
 {
 AStarGlobalPlanner::AStarGlobalPlanner()
@@ -25,6 +31,7 @@ void AStarGlobalPlanner::configure(
     costmap_ros_ = costmap_ros;    
     costmap_ros_->configure();
     costmap_ = costmap_ros_->getCostmap();
+    path_.header.frame_id = costmap_ros_->getGlobalFrameID();
 }
 
 void AStarGlobalPlanner::activate()
@@ -57,6 +64,8 @@ nav_msgs::msg::Path AStarGlobalPlanner::computePath(
     goal_m_.x = static_cast<int>(goal_x);
     goal_m_.y = static_cast<int>(goal_y);
 
+    // reset variables
+    path_.poses.clear();
     resetNodes();
     q_ = std::priority_queue<AStarNode*, std::vector<AStarNode*>, cmp>();
 
@@ -142,7 +151,7 @@ void AStarGlobalPlanner::getNeighbors(AStarNode* cur_node)
 
         // check if new coordinate is inside map and obstacle-free
         if ((0 <= new_x && new_x < size_x_ && 0 <= new_y && new_y < size_y_) &&
-            costmap_->getCost(new_x, new_y) != nav2_costmap_2d::LETHAL_OBSTACLE)
+            costmap_->getCost(new_x, new_y) < nav2_costmap_2d::MAX_NON_OBSTACLE)
         {
             new_node = getNode(new_x, new_y);
             if (new_node == nullptr)
@@ -178,7 +187,6 @@ void AStarGlobalPlanner::getNeighbors(AStarNode* cur_node)
 
 void AStarGlobalPlanner::backtrace(AStarNode* cur_node)
 {
-    path_.poses.clear();
     geometry_msgs::msg::PoseStamped pose;
     while (!(cur_node->x == start_m_.x && cur_node->y == start_m_.y))
     {

@@ -18,6 +18,7 @@ find_package(ament_index_cpp REQUIRED)
 find_package(nav2_util REQUIRED)
 find_package(bt_interface REQUIRED)
 find_package(gnc_msgs REQUIRED)
+find_package(gnc_core REQUIRED)
 
 set(dependencies
   rclcpp
@@ -31,17 +32,18 @@ set(dependencies
   nav2_util
   bt_interface
   gnc_msgs
+  gnc_core
 )
 
 include_directories(include)
 
-add_executable(bt_navigator src/main.cpp src/bt_navigator_node.cpp)
-ament_target_dependencies(bt_navigator ${dependencies})
+add_executable(bt_navigator_server src/main.cpp src/bt_navigator_server.cpp)
+ament_target_dependencies(bt_navigator_server ${dependencies})
 
 add_library(navigate_to_pose_navigator SHARED src/navigate_to_pose_navigator.cpp)
 ament_target_dependencies(navigate_to_pose_navigator ${dependencies})
 
-pluginlib_export_plugin_description_file(bt_navigator navigator_plugins.xml)
+pluginlib_export_plugin_description_file(gnc_core navigator_plugins.xml)
 
 install(TARGETS
   navigate_to_pose_navigator

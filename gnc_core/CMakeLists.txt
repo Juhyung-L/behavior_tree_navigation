@@ -14,6 +14,7 @@ find_package(nav_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
+find_package(nav2_util REQUIRED)
 
 set(dependencies
   rclcpp
@@ -23,6 +24,7 @@ set(dependencies
   tf2_ros
   geometry_msgs
   pluginlib
+  nav2_util
 )
 
 install(DIRECTORY include/
