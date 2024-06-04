@@ -5,20 +5,19 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "tf2_ros/buffer.h"
+#include "geometry_msgs/msg/pose_stamped.hpp"
 
-#include "bt_navigator/bt_navigator.hpp"
+#include "bt_navigators/bt_navigator.hpp"
 #include "gnc_msgs/action/navigate_to_pose.hpp"
 
-namespace bt_navigator
+namespace bt_navigators
 {
 class NavigateToPoseNavigator : public BTNavigator<gnc_msgs::action::NavigateToPose>
 {
 public:
     using ActionT = gnc_msgs::action::NavigateToPose;
 
-    NavigateToPoseNavigator()
-    : BTNavigator()
-    {}
+    NavigateToPoseNavigator();
 
     bool configure(rclcpp_lifecycle::LifecycleNode::WeakPtr parent) override;
     bool cleanup() override;
@@ -31,7 +30,7 @@ protected:
     void onLoop() override;
     void onPreempt(typename ActionT::Goal::ConstSharedPtr goal) override;
     void onCompletion(typename ActionT::Result::SharedPtr result,
-        const bt_interface::BTStatus final_bt_status) override;
+        const bt_navigators::BTStatus final_bt_status) override;
 
     void onGoalPoseReceived(const geometry_msgs::msg::PoseStamped::SharedPtr pose);
     bool initializeGoalPose(ActionT::Goal::ConstSharedPtr goal);

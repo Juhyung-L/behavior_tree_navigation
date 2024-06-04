@@ -1,9 +1,9 @@
 #include "rclcpp/rclcpp.hpp"
 #include "behaviortree_cpp/utils/shared_library.h"
 
-#include "bt_interface/bt_engine.hpp"
+#include "bt_navigators/bt_engine.hpp"
 
-namespace bt_interface
+namespace bt_navigators
 {
 BTEngine::BTEngine(const std::vector<std::string>& plugin_libraries)
 {
@@ -63,7 +63,7 @@ BTStatus BTEngine::run(
 
 BT::Tree
 BTEngine::createTreeFromText(
-    const std::string & xml_string,
+    const std::string& xml_string,
     BT::Blackboard::Ptr blackboard)
 {
     return factory_.createTreeFromText(xml_string, blackboard);
@@ -71,7 +71,7 @@ BTEngine::createTreeFromText(
 
 BT::Tree
 BTEngine::createTreeFromFile(
-    const std::string & file_path,
+    const std::string& file_path,
     BT::Blackboard::Ptr blackboard)
 {
     return factory_.createTreeFromFile(file_path, blackboard);

@@ -10,8 +10,12 @@
             "request": "launch",
             "preLaunchTask": "source ROS workspace",
             "envFile": "${workspaceFolder}/.env",
-            "program": "/home/dev_ws/install/bt_nodes/lib/bt_nodes/test_compute_path_to_pose_action",
-            "args": [],
+            "program": "/home/dev_ws/install/bt_navigator_server/lib/bt_navigator_server/bt_navigator_server",
+            "args": [
+                "--ros-args",
+                "--params-file",
+                "/home/dev_ws/src/simulation_launch/config/nav2_params.yaml"
+            ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

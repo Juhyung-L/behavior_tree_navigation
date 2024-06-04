@@ -33,6 +33,9 @@ public:
     virtual bool on_activate() = 0;
     virtual bool on_deactivate() = 0;
     virtual bool on_cleanup() = 0;
+
+protected:
+    std::string plugin_name_;
 };
 }
 

@@ -1,15 +1,15 @@
-#ifndef ROUND_ROBIN_NODE_HPP_
-#define ROUND_ROBIN_NODE_HPP_
+#ifndef ROUND_ROBIN_HPP_
+#define ROUND_ROBIN_HPP_
 
 #include "behaviortree_cpp/control_node.h"
 
 namespace bt_nodes
 {
-class RoundRobinNode : public BT::ControlNode
+class RoundRobin : public BT::ControlNode
 {
 public:
-    explicit RoundRobinNode(const std::string& name);
-    RoundRobinNode(const std::string& name, const BT::NodeConfiguration& config);
+    explicit RoundRobin(const std::string& name);
+    RoundRobin(const std::string& name, const BT::NodeConfiguration& config);
     BT::NodeStatus tick() override;
     void halt() override;
     static BT::PortsList providedPorts() {return {};}

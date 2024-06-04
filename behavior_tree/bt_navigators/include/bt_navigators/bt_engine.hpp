@@ -7,7 +7,7 @@
 #include "behaviortree_cpp/bt_factory.h"
 #include "behaviortree_cpp/xml_parsing.h"
 
-namespace bt_interface
+namespace bt_navigators
 {
 enum class BTStatus {SUCCEEDED, FAILED, CANCELED};
 

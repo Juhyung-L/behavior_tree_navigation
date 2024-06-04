@@ -1,18 +1,18 @@
-#include "bt_nodes/plugins/control/round_robin_node.hpp"
+#include "bt_nodes/plugins/control/round_robin.hpp"
 
 namespace bt_nodes
 {
-RoundRobinNode::RoundRobinNode(const std::string& name)
+RoundRobin::RoundRobin(const std::string& name)
 : BT::ControlNode::ControlNode(name, {})
 {}
 
-RoundRobinNode::RoundRobinNode(
+RoundRobin::RoundRobin(
   const std::string& name,
   const BT::NodeConfiguration& config)
 : BT::ControlNode(name, config)
 {}
 
-BT::NodeStatus RoundRobinNode::tick()
+BT::NodeStatus RoundRobin::tick()
 {
     const size_t num_children = children_nodes_.size();
 
@@ -65,7 +65,7 @@ BT::NodeStatus RoundRobinNode::tick()
     return all_skipped ? BT::NodeStatus::SKIPPED : BT::NodeStatus::FAILURE;
 }
 
-void RoundRobinNode::halt()
+void RoundRobin::halt()
 {
     ControlNode::halt();
     current_child_idx_ = 0;
@@ -76,5 +76,5 @@ void RoundRobinNode::halt()
 #include "behaviortree_cpp/bt_factory.h"
 BT_REGISTER_NODES(factory)
 {
-  factory.registerNodeType<bt_nodes::RoundRobinNode>("RoundRobin");
+  factory.registerNodeType<bt_nodes::RoundRobin>("RoundRobin");
 }

@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 
+#include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "rclcpp_lifecycle/state.hpp"
 #include "tf2_ros/buffer.h"
@@ -14,9 +15,9 @@
 
 #include "nav2_util/lifecycle_node.hpp"
 #include "nav2_util/odometry_utils.hpp"
-#include "bt_navigator/bt_navigator.hpp"
+#include "gnc_core/bt_navigator_base.hpp"
 
-namespace bt_navigator
+namespace bt_navigator_server
 {
 class BTNavigatorServer : public nav2_util::LifecycleNode
 {

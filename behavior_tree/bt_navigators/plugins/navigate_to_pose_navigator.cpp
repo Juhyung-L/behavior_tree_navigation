@@ -1,13 +1,13 @@
 #include <limits>
 
-#include "geometry_msgs/msg/pose_stamped.hpp"
 #include "nav_msgs/msg/path.hpp"
 #include "ament_index_cpp/get_package_share_directory.hpp"
-
 #include "nav2_util/robot_utils.hpp"
 #include "nav2_util/geometry_utils.hpp"
 #include "nav2_util/node_utils.hpp"
-#include "bt_navigator/navigate_to_pose_navigator.hpp"
+
+#include "bt_navigators/plugins/navigate_to_pose_navigator.hpp"
+#include "gnc_core/bt_navigator_base.hpp"
 
 /**
  * ROS parameters declared
@@ -16,18 +16,24 @@
  * - default_bt_xml_filename
 */
 
-namespace bt_navigator
+namespace bt_navigators
 {
+NavigateToPoseNavigator::NavigateToPoseNavigator()
+: BTNavigator<gnc_msgs::action::NavigateToPose>()
+{
+    plugin_name_ = "NavigateToPoseNavigator";
+}
+
 // called in on_configure()
 bool NavigateToPoseNavigator::configure(rclcpp_lifecycle::LifecycleNode::WeakPtr parent)
 {
     auto node = parent.lock();
     // when delcaring parameters outside of the constructor, 
     // you need to check if the parameter already exists before declaring
-    nav2_util::declare_parameter_if_not_declared(node, "goal_blackboard_id", rclcpp::ParameterValue(std::string("goal")));
-    goal_blackboard_id_ = node->get_parameter("goal_blackboard_id").as_string();
-    nav2_util::declare_parameter_if_not_declared(node, "path_blackboard_id", rclcpp::ParameterValue(std::string("path")));
-    path_blackboard_id_ = node->get_parameter("path_blackboard_id").as_string();
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + ".goal_blackboard_id", rclcpp::ParameterValue(std::string("goal")));
+    goal_blackboard_id_ = node->get_parameter(plugin_name_ + ".goal_blackboard_id").as_string();
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + ".path_blackboard_id", rclcpp::ParameterValue(std::string("path")));
+    path_blackboard_id_ = node->get_parameter(plugin_name_ + ".path_blackboard_id").as_string();
 
     self_client_ = rclcpp_action::create_client<ActionT>(node, getName());
 
@@ -35,8 +41,6 @@ bool NavigateToPoseNavigator::configure(rclcpp_lifecycle::LifecycleNode::WeakPtr
         "goal_pose",
         rclcpp::SystemDefaultsQoS(),
         std::bind(&NavigateToPoseNavigator::onGoalPoseReceived, this, std::placeholders::_1));
-    
-    start_time_ = rclcpp::Time(0);
     return true;
 }
 
@@ -45,14 +49,14 @@ NavigateToPoseNavigator::getDefaultBTFilepath(rclcpp_lifecycle::LifecycleNode::W
 {
     auto node = parent.lock();
     std::string default_bt_xml_filename;
-    if (node->has_parameter("default_bt_xml_filename"))
+    if (!node->has_parameter(plugin_name_ + ".default_bt_xml_filename"))
     {
         std::string default_bt_xml_filename = 
-            ament_index_cpp::get_package_share_directory("bt_navigator") + 
+            ament_index_cpp::get_package_share_directory("bt_navigators") + 
             "/behavior_trees/navigate_to_pose_w_replanning_and_recovery.xml";
-        node->declare_parameter("default_bt_xml_filename", default_bt_xml_filename);
+        node->declare_parameter(plugin_name_ + ".default_bt_xml_filename", default_bt_xml_filename);
     }
-    default_bt_xml_filename = node->get_parameter("default_bt_xml_filename").as_string();
+    default_bt_xml_filename = node->get_parameter(plugin_name_ + ".default_bt_xml_filename").as_string();
     return default_bt_xml_filename;
 }
 
@@ -88,7 +92,7 @@ bool NavigateToPoseNavigator::onGoalReceived(ActionT::Goal::ConstSharedPtr goal)
 void
 NavigateToPoseNavigator::onCompletion(
     typename ActionT::Result::SharedPtr /*result*/,
-    const bt_interface::BTStatus /*final_bt_status*/)
+    const bt_navigators::BTStatus /*final_bt_status*/)
 {}
 
 void NavigateToPoseNavigator::onLoop()
@@ -202,4 +206,4 @@ bool NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr g
 }
 
 #include "pluginlib/class_list_macros.hpp"
-PLUGINLIB_EXPORT_CLASS(bt_navigator::NavigateToPoseNavigator, bt_navigator::BTNavigatorBase);
+PLUGINLIB_EXPORT_CLASS(bt_navigators::NavigateToPoseNavigator, gnc_core::BTNavigatorBase)

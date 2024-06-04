@@ -7,18 +7,18 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "tf2_ros/buffer.h"
-
 #include "nav2_util/odometry_utils.hpp"
-#include "bt_interface/bt_action_server.hpp"
+
+#include "bt_navigators/bt_action_server.hpp"
 #include "gnc_core/bt_navigator_base.hpp"
 
-namespace bt_navigator
+namespace bt_navigators
 {
 template<class ActionT>
 class BTNavigator : public gnc_core::BTNavigatorBase
 {
 public:
-    using Ptr = std::shared_ptr<bt_navigator::BTNavigator<ActionT>>;
+    using Ptr = std::shared_ptr<bt_navigators::BTNavigator<ActionT>>;
 
     BTNavigator()
     {}
@@ -27,7 +27,7 @@ public:
 
     bool on_configure(rclcpp_lifecycle::LifecycleNode::WeakPtr parent,
         std::shared_ptr<nav2_util::OdomSmoother> odom_smoother,
-        const std::vector<std::string> & plugin_lib_names,
+        const std::vector<std::string>& plugin_lib_names,
         std::shared_ptr<tf2_ros::Buffer> tf,
         std::string robot_frame,
         std::string global_frame,
@@ -44,23 +44,31 @@ public:
 
         std::string bt_xml_filename = getDefaultBTFilepath(parent);
 
-        bt_action_server_ = std::make_unique<bt_interface::BTActionServer<ActionT>>(
+        bt_action_server_ = std::make_unique<bt_navigators::BTActionServer<ActionT>>(
             node,
             getName(),
             plugin_lib_names,
             bt_xml_filename,
-            std::bind(&bt_navigator::BTNavigator<ActionT>::onGoalReceived, this, std::placeholders::_1),
-            std::bind(&bt_navigator::BTNavigator<ActionT>::onLoop, this),
-            std::bind(&bt_navigator::BTNavigator<ActionT>::onPreempt, this, std::placeholders::_1),
-            std::bind(&bt_navigator::BTNavigator<ActionT>::onCompletion, this, std::placeholders::_1, std::placeholders::_2));
+            std::bind(&bt_navigators::BTNavigator<ActionT>::onGoalReceived, this, std::placeholders::_1),
+            std::bind(&bt_navigators::BTNavigator<ActionT>::onLoop, this),
+            std::bind(&bt_navigators::BTNavigator<ActionT>::onPreempt, this, std::placeholders::_1),
+            std::bind(&bt_navigators::BTNavigator<ActionT>::onCompletion, this, std::placeholders::_1, std::placeholders::_2));
         
+        bool ok = true;
+        if (!bt_action_server_->on_configure())
+        {
+            ok = false;
+        }
+        // must configure bt_action_server before getting the blackboard
+        // because the blackboard is created inside on_configure()
+
         BT::Blackboard::Ptr blackboard = bt_action_server_->getBlackboard();
         blackboard->set<std::shared_ptr<tf2_ros::Buffer>>("tf_buffer", tf_);
         blackboard->set<bool>("initial_pose_received", false);
         blackboard->set<int>("number_recoveries", 0);
         blackboard->set<std::shared_ptr<nav2_util::OdomSmoother>>("odom_smoother", odom_smoother);
 
-        return configure(parent) && bt_action_server_->on_configure();
+        return configure(parent) && ok;
     }
 
     bool on_activate() final
@@ -92,9 +100,9 @@ public:
     virtual void onLoop() = 0;
     virtual void onPreempt(typename ActionT::Goal::ConstSharedPtr goal) = 0;
     virtual void onCompletion(typename ActionT::Result::SharedPtr result,
-        const bt_interface::BTStatus final_bt_status) = 0;
+        const bt_navigators::BTStatus final_bt_status) = 0;
 protected:
-    std::unique_ptr<bt_interface::BTActionServer<ActionT>> bt_action_server_;
+    std::unique_ptr<bt_navigators::BTActionServer<ActionT>> bt_action_server_;
     rclcpp::Logger logger_ = rclcpp::get_logger("bt_navigator");
     rclcpp::Clock::SharedPtr clock_;
     std::shared_ptr<nav2_util::OdomSmoother> odom_smoother_;

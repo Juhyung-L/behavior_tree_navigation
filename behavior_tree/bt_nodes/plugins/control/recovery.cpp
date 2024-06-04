@@ -1,8 +1,8 @@
-#include "bt_nodes/plugins/control/recovery_node.hpp"
+#include "bt_nodes/plugins/control/recovery.hpp"
 
 namespace bt_nodes
 {
-RecoveryNode::RecoveryNode(
+Recovery::Recovery(
     const std::string& name,
     const BT::NodeConfiguration& conf)
 : BT::ControlNode::ControlNode(name, conf)
@@ -21,7 +21,7 @@ RecoveryNode::RecoveryNode(
  * Before ticking the second node, check if the max number of recoveries
  * were already attempted, in which case return FAILURE.
 */
-BT::NodeStatus RecoveryNode::tick()
+BT::NodeStatus Recovery::tick()
 {
     // number_of_retries_ = max number of recovery attempts
     getInput<unsigned int>("number_of_retries", number_of_retries_);
@@ -118,7 +118,7 @@ BT::NodeStatus RecoveryNode::tick()
     return BT::NodeStatus::FAILURE;
 }
 
-void RecoveryNode::halt()
+void Recovery::halt()
 {
     ControlNode::halt();
     retry_count_ = 0;
@@ -129,5 +129,5 @@ void RecoveryNode::halt()
 #include "behaviortree_cpp/bt_factory.h"
 BT_REGISTER_NODES(factory)
 {
-    factory.registerNodeType<bt_nodes::RecoveryNode>("RecoveryNode");
+    factory.registerNodeType<bt_nodes::Recovery>("Recovery");
 }

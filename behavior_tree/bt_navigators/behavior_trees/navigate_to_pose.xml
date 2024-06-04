@@ -1,0 +1,10 @@
+<!--NavigateToPose without replanning-->
+
+<root BTCPP_format="4" main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <PipelineSequence name="NavigateToPose">
+      <ComputePathToPose goal="{goal}" path="{path}"/>
+      <FollowPath path="{path}"/>
+    </PipelineSequence>
+  </BehaviorTree>
+</root>

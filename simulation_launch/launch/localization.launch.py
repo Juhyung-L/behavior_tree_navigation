@@ -21,8 +21,9 @@ def generate_launch_description():
 
     lifecycle_nodes = ['map_server', 
         'amcl', 
+        'bt_navigator_server',
         'controller_server',
-        'planner_server'
+        'planner_server',
     ]
 
     remappings = [('/tf', 'tf'),
@@ -126,6 +127,15 @@ def generate_launch_description():
                 package='planner_server',
                 executable='planner_server',
                 name='planner_server',
+                output='screen',
+                respawn=use_respawn,
+                respawn_delay=2.0,
+                parameters=[configured_params],
+                arguments=['--ros-args', '--log-level', log_level]),
+            Node(
+                package='bt_navigator_server',
+                executable='bt_navigator_server',
+                name='bt_navigator_server',
                 output='screen',
                 respawn=use_respawn,
                 respawn_delay=2.0,

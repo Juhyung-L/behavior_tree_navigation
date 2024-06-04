@@ -1,4 +1,4 @@
-#include "bt_navigator/bt_navigator_server.hpp"
+#include "bt_navigator_server/bt_navigator_server.hpp"
 
 /**
  * ROS parameters declared
@@ -9,18 +9,18 @@
  * - plugin_lib_names
 */
 
-namespace bt_navigator
+namespace bt_navigator_server
 {
 BTNavigatorServer::BTNavigatorServer(rclcpp::NodeOptions options)
-: nav2_util::LifecycleNode("bt_navigator", "", options)
+: nav2_util::LifecycleNode("bt_navigator_server", "", options)
 , class_loader_("gnc_core", "gnc_core::BTNavigatorBase")
 {
     declare_parameter("global_frame", "map");
-    declare_parameter("robot_frame", "base_link");
+    declare_parameter("robot_frame", "base_footprint");
     declare_parameter("transform_tolerance", 0.1);
     declare_parameter("odom_topic", "odom");
     declare_parameter("plugin_lib_names", rclcpp::ParameterValue(std::vector<std::string>{}));
-    declare_parameter("navigator_type", "bt_navigator::NavigateToPoseNavigator");
+    declare_parameter("navigator_type", "bt_navigators::NavigateToPoseNavigator");
 }
 
 BTNavigatorServer::~BTNavigatorServer()
@@ -64,6 +64,7 @@ BTNavigatorServer::on_configure(const rclcpp_lifecycle::State& /*state*/)
             "\nException: %s",
             navigator_type.c_str(),
             e.what());
+        return nav2_util::CallbackReturn::FAILURE;
     }
     return nav2_util::CallbackReturn::SUCCESS;
 }

@@ -1,19 +1,19 @@
-#ifndef RECOVERY_NODE_HPP_
-#define RECOVERY_NODE_HPP_
+#ifndef RECOVERY_HPP_
+#define RECOVERY_HPP_
 
 #include <string>
 #include "behaviortree_cpp/control_node.h"
 
 namespace bt_nodes
 {
-class RecoveryNode : public BT::ControlNode
+class Recovery : public BT::ControlNode
 {
 public:
-    RecoveryNode(
-        const std::string & name,
-        const BT::NodeConfiguration & conf);
+    Recovery(
+        const std::string& name,
+        const BT::NodeConfiguration& conf);
 
-    ~RecoveryNode() override = default;
+    ~Recovery() override = default;
     
     static BT::PortsList providedPorts()
     {

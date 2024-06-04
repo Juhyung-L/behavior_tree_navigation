@@ -31,6 +31,15 @@ list(APPEND bt_nodes follow_path_action_bt_node)
 add_library(compute_path_to_pose_action_bt_node SHARED plugins/action/compute_path_to_pose_action.cpp)
 list(APPEND bt_nodes compute_path_to_pose_action_bt_node)
 
+add_library(pipeline_sequence_bt_node SHARED plugins/control/pipeline_sequence.cpp)
+list(APPEND bt_nodes pipeline_sequence_bt_node)
+
+add_library(recovery_bt_node SHARED plugins/control/recovery.cpp)
+list(APPEND bt_nodes recovery_bt_node)
+
+add_library(round_robin_bt_node SHARED plugins/control/round_robin.cpp)
+list(APPEND bt_nodes round_robin_bt_node)
+
 foreach(bt_node ${bt_nodes})
   ament_target_dependencies(${bt_node} ${dependencies})
   target_compile_definitions(${bt_node} PRIVATE BT_PLUGIN_EXPORT)
