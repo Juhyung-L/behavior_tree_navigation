@@ -28,6 +28,7 @@ def generate_launch_description():
     robot_model_file = LaunchConfiguration('robot_model_file')
     map_yaml_file = LaunchConfiguration('map_yaml_file')
     params_file = LaunchConfiguration('params_file')
+    log_level = LaunchConfiguration('log_level')
 
     # declare launch arguments
     delcare_rviz_config_file = DeclareLaunchArgument(
@@ -75,6 +76,11 @@ def generate_launch_description():
         default_value=params_file_path,
         description='Path to nav2 parameters file'
     )
+    declare_log_level = DeclareLaunchArgument(
+        name='log_level',
+        default_value='info',
+        description='log level'
+    )
 
     # declare nodes to launch
     rviz_node = Node(
@@ -119,7 +125,8 @@ def generate_launch_description():
             'params_file': params_file,
             'initial_pose.x': x_spawn,
             'initial_pose.y': y_spawn,
-            'initial_pose.yaw': yaw_spawn
+            'initial_pose.yaw': yaw_spawn,
+            'log_level': log_level
         }.items()
     )
 
@@ -133,6 +140,7 @@ def generate_launch_description():
         declare_robot_model_file,
         declare_map_yaml_file,
         declare_params_file,
+        declare_log_level,
         
         robot_localization_node,
         rviz_node,

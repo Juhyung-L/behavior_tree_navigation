@@ -100,10 +100,10 @@ nav2_util::CallbackReturn
 BTNavigatorServer::on_cleanup(const rclcpp_lifecycle::State& /*state*/)
 {
     RCLCPP_INFO(get_logger(), "Cleaning up");
+    navigator_->on_cleanup();
     tf_listener_.reset();
     tf_.reset();
     odom_smoother_.reset();
-    navigator_.reset();
     return nav2_util::CallbackReturn::SUCCESS;
 }
 

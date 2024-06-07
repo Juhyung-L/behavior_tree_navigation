@@ -16,7 +16,7 @@ bt_navigator_server:
     NavigateToPoseNavigator:
       goal_blackboard_id: "goal"
       path_blackboard_id: "path"
-      default_bt_xml_filename: /home/dev_ws/install/bt_navigators/share/bt_navigators/behavior_trees/navigate_to_pose.xml
+      default_bt_xml_filename: "/home/dev_ws/install/bt_navigators/share/bt_navigators/behavior_trees/navigate_to_pose.xml"
 
 planner_server:
   ros__parameters:
@@ -31,7 +31,7 @@ controller_server:
     odom_topic: "odometry/filtered"
     GoalChecker:
       xy_tolerance: 0.25
-      yaw_tolerance: 0.25
+      yaw_tolerance: 3.14
     ProgressChecker:
       minimum_distance: 0.1
       movement_time_allowance: 5.0

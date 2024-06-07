@@ -53,7 +53,7 @@ NavigateToPoseNavigator::getDefaultBTFilepath(rclcpp_lifecycle::LifecycleNode::W
     {
         std::string default_bt_xml_filename = 
             ament_index_cpp::get_package_share_directory("bt_navigators") + 
-            "/behavior_trees/navigate_to_pose_w_replanning_and_recovery.xml";
+            "/behavior_trees/navigate_to_pose.xml";
         node->declare_parameter(plugin_name_ + ".default_bt_xml_filename", default_bt_xml_filename);
     }
     default_bt_xml_filename = node->get_parameter(plugin_name_ + ".default_bt_xml_filename").as_string();
@@ -72,7 +72,7 @@ void NavigateToPoseNavigator::onGoalPoseReceived(const geometry_msgs::msg::PoseS
 {
     ActionT::Goal goal;
     goal.pose = *pose;
-    self_client_->async_send_goal(goal);
+    auto future = self_client_->async_send_goal(goal);
 }
 
 // callbacks sent to bt_action_server_

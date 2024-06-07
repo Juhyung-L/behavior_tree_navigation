@@ -76,5 +76,5 @@ void RoundRobin::halt()
 #include "behaviortree_cpp/bt_factory.h"
 BT_REGISTER_NODES(factory)
 {
-  factory.registerNodeType<bt_nodes::RoundRobin>("RoundRobin");
+    factory.registerNodeType<bt_nodes::RoundRobin>("RoundRobin");
 }

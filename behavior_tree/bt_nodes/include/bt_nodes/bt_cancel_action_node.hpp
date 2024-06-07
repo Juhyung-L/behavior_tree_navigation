@@ -14,9 +14,9 @@ template<class ActionT>
 class BTCancelActionNode : public BT::ActionNodeBase
 {
     BTCancelActionNode(
-        const std::string & xml_tag_name,
-        const std::string & action_name,
-        const BT::NodeConfiguration & conf)
+        const std::string& xml_tag_name,
+        const std::string& action_name,
+        const BT::NodeConfiguration& conf)
     : BT::ActionNodeBase(xml_tag_name, conf), action_name_(action_name)
     {
         BT::Blackboard::Ptr blackboard = config().blackboard;
@@ -47,7 +47,7 @@ class BTCancelActionNode : public BT::ActionNodeBase
     virtual ~BTCancelActionNode()
     {}
 
-    void createActionClient(const std::string & action_name)
+    void createActionClient(const std::string& action_name)
     {
         action_client_ = rclcpp_action::create_client<ActionT>(node_, action_name, callback_group_);
 

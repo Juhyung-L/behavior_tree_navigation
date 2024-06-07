@@ -51,13 +51,12 @@ public:
     static rclcpp::Node::SharedPtr node_;
     static BT::NodeConfiguration* config_;
     static std::shared_ptr<BT::BehaviorTreeFactory> factory_;
-    static std::shared_ptr<BT::Tree> tree_;
+    std::shared_ptr<BT::Tree> tree_;
 };
 
 rclcpp::Node::SharedPtr ComputePathToPoseTestFixture::node_ = nullptr;
 BT::NodeConfiguration* ComputePathToPoseTestFixture::config_ = nullptr;
 std::shared_ptr<BT::BehaviorTreeFactory> ComputePathToPoseTestFixture::factory_ = nullptr;
-std::shared_ptr<BT::Tree> ComputePathToPoseTestFixture::tree_ = nullptr;
 
 TEST_F(ComputePathToPoseTestFixture, test_tick)
 {

@@ -26,11 +26,11 @@ public:
     ~BTNavigatorServer();
 
 protected:
-    nav2_util::CallbackReturn on_configure(const rclcpp_lifecycle::State & state) override;
-    nav2_util::CallbackReturn on_activate(const rclcpp_lifecycle::State & state) override;
-    nav2_util::CallbackReturn on_deactivate(const rclcpp_lifecycle::State & state) override;
-    nav2_util::CallbackReturn on_cleanup(const rclcpp_lifecycle::State & state) override;
-    nav2_util::CallbackReturn on_shutdown(const rclcpp_lifecycle::State & state) override;
+    nav2_util::CallbackReturn on_configure(const rclcpp_lifecycle::State& state) override;
+    nav2_util::CallbackReturn on_activate(const rclcpp_lifecycle::State& state) override;
+    nav2_util::CallbackReturn on_deactivate(const rclcpp_lifecycle::State& state) override;
+    nav2_util::CallbackReturn on_cleanup(const rclcpp_lifecycle::State& state) override;
+    nav2_util::CallbackReturn on_shutdown(const rclcpp_lifecycle::State& state) override;
     
     pluginlib::ClassLoader<gnc_core::BTNavigatorBase> class_loader_;
     pluginlib::UniquePtr<gnc_core::BTNavigatorBase> navigator_;

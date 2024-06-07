@@ -31,7 +31,6 @@ public:
         
         auto bt_loop_duration = blackboard->get<std::chrono::milliseconds>("bt_loop_duration");
         server_timeout_ = blackboard->get<std::chrono::milliseconds>("server_timeout");
-        getInput<std::chrono::milliseconds>("server_timeout", server_timeout_);
         wait_for_service_timeout_ = blackboard->get<std::chrono::milliseconds>("wait_for_service_timeout");
 
         max_timeout_ = std::chrono::duration_cast<std::chrono::milliseconds>(bt_loop_duration * 0.5);

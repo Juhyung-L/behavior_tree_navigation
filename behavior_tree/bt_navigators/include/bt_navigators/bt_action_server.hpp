@@ -36,13 +36,13 @@ public:
     : action_name_(action_name)
     , default_bt_xml_filename_(default_bt_xml_filename)
     , plugin_lib_names_(plugin_lib_names)
-    , node_(parent)
+    , parent_(parent)
     , on_goal_received_callback_(on_goal_received_callback)
     , on_loop_callback_(on_loop_callback)
     , on_preempt_callback_(on_preempt_callback)
     , on_completion_callback_(on_completion_callback)
     {
-        auto node = node_.lock();
+        auto node = parent_.lock();
         logger_ = node->get_logger();
         clock_ = node->get_clock();
 
@@ -50,17 +50,15 @@ public:
         node->declare_parameter("server_timeout", 20);
         node->declare_parameter("wait_for_service_timeout", 1000);
         node->declare_parameter("action_server_result_timeout", 900.0);
-        node->declare_parameter("always_reload_bt_xml", false);
     }
 
     ~BTActionServer() {}
 
     bool on_configure()
     {
-        auto node = node_.lock();
+        auto node = parent_.lock();
 
-        auto options = rclcpp::NodeOptions();
-        auto client_node = client_node_ = std::make_shared<rclcpp::Node>("_", options);
+        client_node_ = std::make_shared<rclcpp::Node>("client_node", rclcpp::NodeOptions());
 
         double action_server_result_timeout =
         node->get_parameter("action_server_result_timeout").as_double();
@@ -86,7 +84,6 @@ public:
         server_timeout_ = std::chrono::milliseconds(time);
         node->get_parameter("wait_for_service_timeout", time);
         wait_for_service_timeout_ = std::chrono::milliseconds(time);
-        node->get_parameter("always_reload_bt_xml", always_reload_bt_xml_);
         
         bt_ = std::make_unique<bt_navigators::BTEngine>(plugin_lib_names_);
 
@@ -211,7 +208,7 @@ public:
         action_server_->publish_feedback(feedback);
     }
 
-    const BT::Tree & getTree() const
+    const BT::Tree& getTree() const
     {
         return tree_;
     }
@@ -224,7 +221,7 @@ public:
 private:
     void executeCallback()
     {
-        if (on_goal_received_callback_(action_server_->get_current_goal()))
+        if (!on_goal_received_callback_(action_server_->get_current_goal()))
         {
             action_server_->terminate_current();
             return;
@@ -293,7 +290,7 @@ private:
     std::vector<std::string> plugin_lib_names_;
 
     rclcpp::Node::SharedPtr client_node_;
-    rclcpp_lifecycle::LifecycleNode::WeakPtr node_;
+    rclcpp_lifecycle::LifecycleNode::WeakPtr parent_;
 
     rclcpp::Clock::SharedPtr clock_;
     rclcpp::Logger logger_{rclcpp::get_logger("bt_action_server")};
@@ -303,8 +300,6 @@ private:
     std::chrono::milliseconds server_timeout_;
     std::chrono::milliseconds wait_for_service_timeout_;
     
-    bool always_reload_bt_xml_ = false;
-
     OnGoalReceivedCallback on_goal_received_callback_;
     OnLoopCallback on_loop_callback_;
     OnPreemptCallback on_preempt_callback_;

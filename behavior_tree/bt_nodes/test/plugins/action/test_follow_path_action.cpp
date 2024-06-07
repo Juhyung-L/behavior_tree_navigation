@@ -75,13 +75,12 @@ public:
     static rclcpp::Node::SharedPtr node_;
     static BT::NodeConfiguration* config_;
     static std::shared_ptr<BT::BehaviorTreeFactory> factory_;
-    static std::shared_ptr<BT::Tree> tree_;
+    std::shared_ptr<BT::Tree> tree_;
 };
 
 rclcpp::Node::SharedPtr FollowPathActionTestFixture::node_ = nullptr;
 BT::NodeConfiguration* FollowPathActionTestFixture::config_ = nullptr;
 std::shared_ptr<BT::BehaviorTreeFactory> FollowPathActionTestFixture::factory_ = nullptr;
-std::shared_ptr<BT::Tree> FollowPathActionTestFixture::tree_ = nullptr;
 
 TEST_F(FollowPathActionTestFixture, test_tick)
 {

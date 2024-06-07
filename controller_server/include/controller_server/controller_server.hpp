@@ -22,7 +22,7 @@ namespace controller_server
 class ControllerServer : public nav2_util::LifecycleNode
 {
 public:
-    explicit ControllerServer(const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
+    explicit ControllerServer(const rclcpp::NodeOptions& options = rclcpp::NodeOptions());
     ~ControllerServer();
 protected:
     nav2_util::CallbackReturn on_configure(const rclcpp_lifecycle::State& state) override;

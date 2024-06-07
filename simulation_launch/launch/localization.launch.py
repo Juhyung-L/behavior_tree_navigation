@@ -19,7 +19,8 @@ def generate_launch_description():
     intial_pose_y = LaunchConfiguration('initial_pose.y')
     intial_pose_yaw = LaunchConfiguration('initial_pose.yaw')
 
-    lifecycle_nodes = ['map_server', 
+    lifecycle_nodes = [
+        'map_server', 
         'amcl', 
         'bt_navigator_server',
         'controller_server',

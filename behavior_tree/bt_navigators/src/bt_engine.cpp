@@ -8,7 +8,7 @@ namespace bt_navigators
 BTEngine::BTEngine(const std::vector<std::string>& plugin_libraries)
 {
     BT::SharedLibrary loader;
-    for (const auto & p : plugin_libraries)
+    for (const auto& p : plugin_libraries)
     {
         factory_.registerFromPlugin(loader.getOSName(p));
     }

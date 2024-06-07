@@ -45,6 +45,20 @@ foreach(bt_node ${bt_nodes})
   target_compile_definitions(${bt_node} PRIVATE BT_PLUGIN_EXPORT)
 endforeach()
 
+# auto generate tree nodes xml file
+set(OUTPUT_XML_PATH "${CMAKE_CURRENT_SOURCE_DIR}/bt_nodes.xml")
+add_executable(generate_tree_nodes_model_xml plugins/generate_tree_nodes_model_xml.cpp)
+ament_target_dependencies(generate_tree_nodes_model_xml ${dependencies})
+target_link_libraries(generate_tree_nodes_model_xml ${bt_nodes})
+add_custom_command(
+  TARGET generate_tree_nodes_model_xml
+  COMMAND generate_tree_nodes_model_xml "${OUTPUT_XML_PATH}"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+install(TARGETS generate_tree_nodes_model_xml
+  RUNTIME DESTINATION lib/${PROJECT_NAME})
+
 install(TARGETS ${bt_nodes}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib

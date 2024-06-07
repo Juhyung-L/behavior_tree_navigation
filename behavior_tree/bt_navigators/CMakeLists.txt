@@ -68,7 +68,14 @@ if(BUILD_TESTING)
   set(ament_cmake_copyright_FOUND TRUE)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(groot2publisher_test test/groot2publisher_test.cpp)
+  ament_target_dependencies(groot2publisher_test nav2_util behaviortree_cpp ament_index_cpp)
 endif()
+
+install(TARGETS groot2publisher_test
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
 
 ament_export_libraries(navigate_to_pose_navigator)
 ament_export_dependencies(${plugin_dependencies})

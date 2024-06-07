@@ -25,7 +25,7 @@ public:
     virtual ~BTNavigatorBase() = default;
     virtual bool on_configure(rclcpp_lifecycle::LifecycleNode::WeakPtr parent,
         std::shared_ptr<nav2_util::OdomSmoother> odom_smoother,
-        const std::vector<std::string> & plugin_lib_names,
+        const std::vector<std::string>& plugin_lib_names,
         std::shared_ptr<tf2_ros::Buffer> tf,
         std::string robot_frame,
         std::string global_frame,

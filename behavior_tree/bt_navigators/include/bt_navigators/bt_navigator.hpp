@@ -8,6 +8,7 @@
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "tf2_ros/buffer.h"
 #include "nav2_util/odometry_utils.hpp"
+#include "behaviortree_cpp/loggers/groot2_publisher.h"
 
 #include "bt_navigators/bt_action_server.hpp"
 #include "gnc_core/bt_navigator_base.hpp"
@@ -42,13 +43,13 @@ public:
         global_frame_ = global_frame;
         transform_tolerance_ = transform_tolerance;
 
-        std::string bt_xml_filename = getDefaultBTFilepath(parent);
+        std::string default_bt_xml_filename = getDefaultBTFilepath(parent);
 
         bt_action_server_ = std::make_unique<bt_navigators::BTActionServer<ActionT>>(
             node,
             getName(),
             plugin_lib_names,
-            bt_xml_filename,
+            default_bt_xml_filename,
             std::bind(&bt_navigators::BTNavigator<ActionT>::onGoalReceived, this, std::placeholders::_1),
             std::bind(&bt_navigators::BTNavigator<ActionT>::onLoop, this),
             std::bind(&bt_navigators::BTNavigator<ActionT>::onPreempt, this, std::placeholders::_1),
@@ -73,7 +74,11 @@ public:
 
     bool on_activate() final
     {
-        return activate() && bt_action_server_->on_activate();
+        bool ok = activate() && bt_action_server_->on_activate();
+        // the behavior tree is set in on_activate(), so groot publisher needs to be created
+        // after since it requires the tree in its constructor
+        groot_pub_ = std::make_unique<BT::Groot2Publisher>(bt_action_server_->getTree());
+        return ok;
     }
 
     bool on_deactivate() final
@@ -110,6 +115,7 @@ protected:
     std::string robot_frame_;
     std::string global_frame_;
     double transform_tolerance_;
+    std::unique_ptr<BT::Groot2Publisher> groot_pub_;
 };
 }
 
