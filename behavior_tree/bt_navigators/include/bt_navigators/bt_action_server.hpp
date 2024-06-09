@@ -7,6 +7,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "behaviortree_cpp/bt_factory.h"
+#include "behaviortree_cpp/loggers/groot2_publisher.h"
 #include "nav2_util/simple_action_server.hpp"
 
 #include "bt_navigators/bt_engine.hpp"
@@ -102,12 +103,14 @@ public:
         {
             return false;
         }
+        groot_pub_ = std::make_unique<BT::Groot2Publisher>(tree_);
         action_server_->activate();
         return true;
     }
 
     bool on_deactivate()
     {
+        groot_pub_.reset();
         action_server_->deactivate();
         return true;
     }
@@ -304,6 +307,8 @@ private:
     OnLoopCallback on_loop_callback_;
     OnPreemptCallback on_preempt_callback_;
     OnCompletionCallback on_completion_callback_;
+
+    std::unique_ptr<BT::Groot2Publisher> groot_pub_;
 };
 }
 

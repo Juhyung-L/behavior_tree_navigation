@@ -8,7 +8,6 @@
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "tf2_ros/buffer.h"
 #include "nav2_util/odometry_utils.hpp"
-#include "behaviortree_cpp/loggers/groot2_publisher.h"
 
 #include "bt_navigators/bt_action_server.hpp"
 #include "gnc_core/bt_navigator_base.hpp"
@@ -74,11 +73,7 @@ public:
 
     bool on_activate() final
     {
-        bool ok = activate() && bt_action_server_->on_activate();
-        // the behavior tree is set in on_activate(), so groot publisher needs to be created
-        // after since it requires the tree in its constructor
-        groot_pub_ = std::make_unique<BT::Groot2Publisher>(bt_action_server_->getTree());
-        return ok;
+        return activate() && bt_action_server_->on_activate();
     }
 
     bool on_deactivate() final
@@ -115,7 +110,6 @@ protected:
     std::string robot_frame_;
     std::string global_frame_;
     double transform_tolerance_;
-    std::unique_ptr<BT::Groot2Publisher> groot_pub_;
 };
 }
 

@@ -22,7 +22,6 @@ private:
     double xy_tolerance_;
     double xy_tolerance_sq_;
     double yaw_tolerance_;
-    std::string name_;
 };
 }
 

@@ -102,7 +102,8 @@ private:
      * 1. cuting the global path where the local costmap ends
      * 2. filling in poses in between consecutive poses to match local costmap's resolution
     */
-    nav_2d_msgs::msg::Path2D prepareGlobalPath(nav_2d_msgs::msg::Path2D in_path);
+    nav_2d_msgs::msg::Path2D prepareGlobalPath(const nav_2d_msgs::msg::Path2D& in_path,
+        const geometry_msgs::msg::Pose& current_pose);
 };
 }
 

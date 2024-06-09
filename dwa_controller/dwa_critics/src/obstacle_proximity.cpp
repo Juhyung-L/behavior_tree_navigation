@@ -9,18 +9,18 @@ namespace dwa_critics
 ObstacleProximityCritic::ObstacleProximityCritic()
 : BaseCritic()
 {
-    name_ = "ObstacleProximity";
+    critic_name_ = "ObstacleProximity";
 }
 
 void ObstacleProximityCritic::on_initialize()
 {
     auto node = parent_.lock();
 
-    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + name_ + ".weight", rclcpp::ParameterValue(1.0));
-    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + name_ + ".invert_score", rclcpp::ParameterValue(true));
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + critic_name_ + ".weight", rclcpp::ParameterValue(1.0));
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + critic_name_ + ".invert_score", rclcpp::ParameterValue(true));
     
-    weight_ = node->get_parameter(plugin_name_ + "." + name_ + ".weight").as_double();
-    invert_score_ = node->get_parameter(plugin_name_ + "." + name_ + ".invert_score").as_bool();
+    weight_ = node->get_parameter(plugin_name_ + "." + critic_name_ + ".weight").as_double();
+    invert_score_ = node->get_parameter(plugin_name_ + "." + critic_name_ + ".invert_score").as_bool();
 }
 
 void ObstacleProximityCritic::prepare(const nav_2d_msgs::msg::Path2D& /*globa_traj*/)

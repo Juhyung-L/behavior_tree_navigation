@@ -133,7 +133,7 @@ geometry_msgs::msg::Twist DWALocalPlanner::computeVelocityCommand(
 
     // prepare global path
     nav_2d_msgs::msg::Path2D global_path_2d = dwa_util::path3Dto2D(global_path);
-    nav_2d_msgs::msg::Path2D adjusted_global_path = prepareGlobalPath(global_path_2d);
+    nav_2d_msgs::msg::Path2D adjusted_global_path = prepareGlobalPath(global_path_2d, current_pose);
     nav_2d_msgs::msg::Path2D transformed_global_path;
     if (!dwa_util::transformPath2D(tf_buffer_, costmap_ros_->getGlobalFrameID(), adjusted_global_path, transformed_global_path))
     {
@@ -333,7 +333,8 @@ double DWALocalPlanner::projectVelocity(double current_vel, double acc, double d
     }
 }
 
-nav_2d_msgs::msg::Path2D DWALocalPlanner::prepareGlobalPath(nav_2d_msgs::msg::Path2D in_path)
+nav_2d_msgs::msg::Path2D DWALocalPlanner::prepareGlobalPath(const nav_2d_msgs::msg::Path2D& in_path, 
+    const geometry_msgs::msg::Pose& current_pose)
 {
     nav_2d_msgs::msg::Path2D out_path;
     out_path.header.frame_id = in_path.header.frame_id;
@@ -343,25 +344,52 @@ nav_2d_msgs::msg::Path2D DWALocalPlanner::prepareGlobalPath(nav_2d_msgs::msg::Pa
         return out_path;
     }
 
-    // cut the global path where the local costmap ends
-    // if the global path ends inside of the costmap, it doesn't get cut
-    unsigned int x, y;
-    size_t i = 0;
-    for (; i<in_path.poses.size(); ++i)
+    /**
+     * The objective of this function is to get the section of the global path that
+     * starts where the robot currently is and ends where the local costmap ends.
+     */
+
+    // first get the index closest to the robot's current pose
+    double cur_min_dist = std::numeric_limits<double>::max();
+    size_t start_idx = 0;
+    for (; start_idx<in_path.poses.size(); ++start_idx)
     {
-        // the first pose that is outside of the local costmap
-        if (!costmap_->worldToMap(in_path.poses[i].x, in_path.poses[i].y, x, y))
+        double dx = current_pose.position.x - in_path.poses[start_idx].x;
+        double dy = current_pose.position.y - in_path.poses[start_idx].y;
+        double dist = dx*dx +dy*dy;
+        if (dist < cur_min_dist)
+        {
+            cur_min_dist = dist;
+        }
+        else
         {
             break;
         }
     }
-    in_path.poses.resize(i);
+    start_idx--;
+
+    // cut the global path where the local costmap ends
+    // if the global path ends inside of the costmap, it doesn't get cut
+    unsigned int x, y;
+    size_t end_idx = start_idx;
+    for (; end_idx<in_path.poses.size(); ++end_idx)
+    {
+        // the first pose that is outside of the local costmap
+        if (!costmap_->worldToMap(in_path.poses[end_idx].x, in_path.poses[end_idx].y, x, y))
+        {
+            break;
+        }
+    }
 
     // interpolate
-    geometry_msgs::msg::Pose2D prev = in_path.poses[0];
+    geometry_msgs::msg::Pose2D prev = in_path.poses[start_idx];
     out_path.poses.push_back(prev);
+    if (start_idx == in_path.poses.size() - 1)
+    {
+        return out_path;
+    }
     double resolution = costmap_->getResolution();
-    for (size_t i=0; i<in_path.poses.size(); ++i)
+    for (size_t i=start_idx+1; i<end_idx; ++i)
     {
         geometry_msgs::msg::Pose2D cur;
         cur.x = in_path.poses[i].x;
@@ -390,18 +418,6 @@ nav_2d_msgs::msg::Path2D DWALocalPlanner::prepareGlobalPath(nav_2d_msgs::msg::Pa
         prev = cur;
     }
 
-    // when cutting the global path, the last pose is the first pose outside of the costmap
-    // then we interpolated
-    // so we need to cut the path once more to get rid of interpolated poses outside of the costmap
-    i = 0;
-    for (; i<out_path.poses.size(); ++i)
-    {
-        if (!costmap_->worldToMap(out_path.poses[i].x, out_path.poses[i].y, x, y))
-        {
-            break;
-        }
-    }
-    out_path.poses.resize(i);
     return out_path;
 }
 

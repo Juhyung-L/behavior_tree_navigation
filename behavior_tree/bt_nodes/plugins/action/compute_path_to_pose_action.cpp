@@ -40,6 +40,18 @@ void ComputePathToPoseAction::halt()
     setOutput<nav_msgs::msg::Path>("path", empty_path);
     BTActionNode::halt();
 }
+
+void ComputePathToPoseAction::on_wait_for_result(
+    std::shared_ptr<const gnc_msgs::action::ComputePathToPose::Feedback> /*feedback*/)
+{
+    geometry_msgs::msg::PoseStamped new_goal;    
+    getInput<geometry_msgs::msg::PoseStamped>("goal", new_goal);
+    if (goal_.goal != new_goal)
+    {
+        goal_.goal = new_goal;
+        goal_updated_ = true;
+    }
+}
 }
 
 #include "behaviortree_cpp/bt_factory.h"

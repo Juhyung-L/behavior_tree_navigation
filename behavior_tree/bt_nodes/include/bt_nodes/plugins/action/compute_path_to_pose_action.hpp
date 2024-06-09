@@ -26,6 +26,8 @@ public:
     BT::NodeStatus on_aborted() override;
     BT::NodeStatus on_cancelled() override;
     void halt() override;
+    void on_wait_for_result(
+        std::shared_ptr<const gnc_msgs::action::ComputePathToPose::Feedback> feedback) override;
     static BT::PortsList providedPorts()
     {
         return providedBasicPorts({

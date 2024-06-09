@@ -23,7 +23,6 @@ private:
     rclcpp::Time baseline_time_;
 
     rclcpp::Clock::SharedPtr clock_;
-    std::string name_{"progress_checker"};
 
     // the robot must move minimum_distance_ in less than movement_time_allowance_ time
     // to be considered as progressed

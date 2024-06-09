@@ -32,6 +32,9 @@ public:
         costmap_ = costmap_ros->getCostmap();
         plugin_name_ = plugin_name;
         on_initialize();
+
+        auto node = parent.lock();
+        RCLCPP_INFO(node->get_logger(), "%s Critic loaded", critic_name_.c_str());
     }
 
     virtual void reset() {}
@@ -48,7 +51,7 @@ protected:
     std::shared_ptr<nav2_costmap_2d::Costmap2DROS> costmap_ros_;
     nav2_costmap_2d::Costmap2D* costmap_;
     nav2_util::LifecycleNode::WeakPtr parent_;
-    std::string name_;
+    std::string critic_name_;
     std::string plugin_name_;
 };
 }

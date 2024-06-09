@@ -11,17 +11,17 @@ namespace dwa_critics
 GlobalPathAlignCritic::GlobalPathAlignCritic()
 : BaseCritic()
 {
-    name_ = "GlobalPathAlign";
+    critic_name_ = "GlobalPathAlign";
 }
 
 void GlobalPathAlignCritic::on_initialize()
 {
     auto node = parent_.lock();
-    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + name_ + ".weight", rclcpp::ParameterValue(1.0));
-    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + name_ + ".invert_score", rclcpp::ParameterValue(true));
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + critic_name_ + ".weight", rclcpp::ParameterValue(1.0));
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + critic_name_ + ".invert_score", rclcpp::ParameterValue(true));
     
-    weight_ = node->get_parameter(plugin_name_ + "." + name_ + ".weight").as_double();
-    invert_score_ = node->get_parameter(plugin_name_ + "." + name_ + ".invert_score").as_bool();
+    weight_ = node->get_parameter(plugin_name_ + "." + critic_name_ + ".weight").as_double();
+    invert_score_ = node->get_parameter(plugin_name_ + "." + critic_name_ + ".invert_score").as_bool();
 
     size_x_ = costmap_->getSizeInCellsX();
     size_y_ = costmap_->getSizeInCellsY();

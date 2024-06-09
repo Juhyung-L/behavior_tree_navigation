@@ -10,13 +10,13 @@ void ProgressChecker::initialize(const rclcpp_lifecycle::LifecycleNode::WeakPtr&
     clock_ = node->get_clock();
 
     nav2_util::declare_parameter_if_not_declared(
-        node, name_ + ".ProgressChecker.minimum_distance", rclcpp::ParameterValue(0.1));
+        node, "ProgressChecker.minimum_distance", rclcpp::ParameterValue(0.1));
     nav2_util::declare_parameter_if_not_declared(
-        node, name_ + ".ProgressChecker.movement_time_allowance", rclcpp::ParameterValue(5.0));
+        node, "ProgressChecker.movement_time_allowance", rclcpp::ParameterValue(5.0));
     
-    minimum_distance_ = node->get_parameter(name_ + ".ProgressChecker.minimum_distance").as_double();
+    minimum_distance_ = node->get_parameter("ProgressChecker.minimum_distance").as_double();
     movement_time_allowance_ 
-        = rclcpp::Duration::from_seconds(node->get_parameter(name_ + ".ProgressChecker.movement_time_allowance").as_double());
+        = rclcpp::Duration::from_seconds(node->get_parameter("ProgressChecker.movement_time_allowance").as_double());
 }
 
 bool ProgressChecker::isProgressed(geometry_msgs::msg::Pose& cur_pose)

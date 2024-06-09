@@ -31,7 +31,7 @@ controller_server:
     odom_topic: "odometry/filtered"
     GoalChecker:
       xy_tolerance: 0.25
-      yaw_tolerance: 3.14
+      yaw_tolerance: 3.14 # no angle check
     ProgressChecker:
       minimum_distance: 0.1
       movement_time_allowance: 5.0
@@ -39,7 +39,7 @@ controller_server:
       vx_samples: 8
       vy_samples: 8
       vtheta_samples: 10
-      sim_time: 1.5
+      sim_time: 1.7
       time_granularity: 0.1
       debug: True
       min_vel_x: -0.3
@@ -54,16 +54,20 @@ controller_server:
       max_vel_theta: 0.3
       decel_theta: -2.5
       acc_theta: 2.5
-      critic_names: ["GlobalPathAlign", "ObstacleProximity", "PathLength"]
+      critic_names: [
+        "GlobalPathAlign", 
+        "ObstacleProximity", 
+        # "PathLength"
+      ]
       GlobalPathAlign:
-        weight: 1.2
+        weight: 1.3
         invert_score: true
       ObstacleProximity:
         weight: 2.0
         invert_score: true
-      PathLength:
-        weight: 0.3
-        invert_score: false
+      # PathLength:
+      #   weight: 0.3
+      #   invert_score: false
 
 amcl:
   ros__parameters:
@@ -81,8 +85,8 @@ amcl:
     global_frame_id: "map"
     lambda_short: 0.1
     laser_likelihood_max_dist: 2.0
-    laser_max_range: 100.0
-    laser_min_range: -1.0
+    laser_max_range: 6.0
+    laser_min_range: 0.12
     laser_model_type: "likelihood_field"
     max_beams: 60
     max_particles: 2000

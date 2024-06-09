@@ -11,17 +11,17 @@ namespace dwa_critics
 PathLengthCritic::PathLengthCritic()
 : BaseCritic()
 {
-    name_ = "PathLength";
+    critic_name_ = "PathLength";
 }
 
 void PathLengthCritic::on_initialize()
 {
     auto node = parent_.lock();
-    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + name_ + ".weight", rclcpp::ParameterValue(1.0));
-    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + name_ + ".invert_score", rclcpp::ParameterValue(false));
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + critic_name_ + ".weight", rclcpp::ParameterValue(1.0));
+    nav2_util::declare_parameter_if_not_declared(node, plugin_name_ + "." + critic_name_ + ".invert_score", rclcpp::ParameterValue(false));
     
-    weight_ = node->get_parameter(plugin_name_ + "." + name_ + ".weight").as_double();
-    invert_score_ = node->get_parameter(plugin_name_ + "." + name_ + ".invert_score").as_bool();
+    weight_ = node->get_parameter(plugin_name_ + "." + critic_name_ + ".weight").as_double();
+    invert_score_ = node->get_parameter(plugin_name_ + "." + critic_name_ + ".invert_score").as_bool();
 }
 
 void PathLengthCritic::prepare(const nav_2d_msgs::msg::Path2D& /*global_path*/)
