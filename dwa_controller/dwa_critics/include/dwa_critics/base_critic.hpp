@@ -39,9 +39,12 @@ public:
 
     virtual void reset() {}
     /**
-     * @param global_path Global path inside of the local costmap
+     * @param global_path Global path inside of the local costmap. The path should be in local costmap frame.
     */
     virtual void prepare(const nav_2d_msgs::msg::Path2D& global_path) = 0;
+    /**
+     * @param local_path Sampled paths. The path should be in local costmap frame.
+     */
     virtual double scorePath(const nav_2d_msgs::msg::Path2D& local_path) = 0;
     double weight_;
     bool invert_score_;

@@ -24,6 +24,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "action/FollowPath.action"
   "action/ComputePathToPose.action"
   "action/NavigateToPose.action"
+  "action/BackUp.action"
   DEPENDENCIES ${dependencies}
 )
 

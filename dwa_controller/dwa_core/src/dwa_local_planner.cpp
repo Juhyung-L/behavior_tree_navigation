@@ -68,7 +68,8 @@ DWALocalPlanner::configure(const rclcpp_lifecycle::LifecycleNode::WeakPtr& paren
 
     costmap_ros_ = costmap_ros;
     costmap_ = costmap_ros_->getCostmap();
-    
+    costmap_frame_ = costmap_ros_->getGlobalFrameID();
+
     // debug publishers (only publish if debug_ flag is true)
     // publishes sampled paths for visualization in RViz
     paths_pub_ = node->create_publisher<nav_2d_msgs::msg::DWATrajectories>(
@@ -135,11 +136,11 @@ geometry_msgs::msg::Twist DWALocalPlanner::computeVelocityCommand(
     nav_2d_msgs::msg::Path2D global_path_2d = dwa_util::path3Dto2D(global_path);
     nav_2d_msgs::msg::Path2D adjusted_global_path = prepareGlobalPath(global_path_2d, current_pose);
     nav_2d_msgs::msg::Path2D transformed_global_path;
-    if (!dwa_util::transformPath2D(tf_buffer_, costmap_ros_->getGlobalFrameID(), adjusted_global_path, transformed_global_path))
+    // the global path is in the global costmap frame, It needs to be in the local costmap frame
+    if (!dwa_util::transformPath2D(tf_buffer_, costmap_frame_, adjusted_global_path, transformed_global_path))
     {
         return cmd_vel; // failed to transform path
     }
-    transformed_global_path.header.frame_id = costmap_ros_->getGlobalFrameID();
     
     for (auto& critic : critics_)
     {
@@ -261,7 +262,7 @@ geometry_msgs::msg::Twist DWALocalPlanner::computeVelocityCommand(
             };
         std::sort(debug_nodes.begin(), debug_nodes.end(), cmp);
         nav_2d_msgs::msg::DWATrajectories paths;
-        paths.header.frame_id = costmap_ros_->getGlobalFrameID();
+        paths.header.frame_id = costmap_frame_;
         
         int num_paths_to_print = 10;
         paths.scores.reserve(num_paths_to_print);
@@ -283,7 +284,9 @@ nav_2d_msgs::msg::Path2D DWALocalPlanner::generatePath(
     const nav_2d_msgs::msg::Twist2D& target_vel)
 {
     nav_2d_msgs::msg::Path2D path;
-    path.poses.push_back(start_pose); // push the start pose
+    // since the path starts from robot's current pose in local costmap frame,
+    // the generated path is also in local costmap frame
+    path.poses.push_back(start_pose);
     geometry_msgs::msg::Pose2D pose = start_pose;
     nav_2d_msgs::msg::Twist2D vel = current_vel;
     for (int i=1; i<steps_; ++i)

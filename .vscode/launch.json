@@ -38,7 +38,7 @@
             "name": "(gdb) Attach",
             "type": "cppdbg",
             "request": "attach",
-            "program": "/home/dev_ws/install/planner_server/lib/planner_server/planner_server",
+            "program": "/home/dev_ws/install/controller_server/lib/controller_server/controller_server",
             "processId": "${command:pickProcess}",
             "MIMode": "gdb",
             "setupCommands": [

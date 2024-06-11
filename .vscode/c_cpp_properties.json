@@ -19,6 +19,7 @@
         "/home/dev_ws/src/behavior_tree/bt_navigator_server/include/**",
         "/home/dev_ws/src/behavior_tree/bt_navigators/include/**",
         "/home/dev_ws/src/behavior_tree/bt_nodes/include/**",
+        "/home/dev_ws/src/behaviors/include/**",
         "/home/dev_ws/src/controller_server/include/**",
         "/home/dev_ws/src/custom_rviz_plugins/include/**",
         "/home/dev_ws/src/dwa_controller/dwa_core/include/**",

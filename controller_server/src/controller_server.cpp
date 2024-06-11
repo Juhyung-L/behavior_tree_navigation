@@ -135,8 +135,8 @@ void ControllerServer::executeController()
         // cancel requested
         if (action_server_->is_cancel_requested())
         {
+            stopRobot();
             action_server_->terminate_all();
-            publishZeroVelocity();
             return;
         }
 
@@ -157,8 +157,8 @@ void ControllerServer::executeController()
         if (!costmap_ros_->getRobotPose(cur_pose))
         {
             RCLCPP_ERROR(logger_, "Failed to get robot pose");
+            stopRobot();
             action_server_->terminate_current();
-            publishZeroVelocity();
             return;
         }
 
@@ -166,8 +166,8 @@ void ControllerServer::executeController()
         if (!progress_checker_->isProgressed(cur_pose.pose))
         {
             RCLCPP_ERROR(logger_, "Failed to progress towards goal");
+            stopRobot();
             action_server_->terminate_current();
-            publishZeroVelocity();
             return;
         }
         
@@ -177,7 +177,7 @@ void ControllerServer::executeController()
         if (goal_checker_->isGoalReached(cur_pose.pose, goal_pose))
         {
             RCLCPP_INFO(logger_, "Goal reached");
-            publishZeroVelocity();
+            stopRobot();
             action_server_->succeeded_current();
             return;
         }
@@ -222,15 +222,9 @@ void ControllerServer::publishFeedback(
     action_server_->publish_feedback(feedback);
 }
 
-void ControllerServer::publishZeroVelocity()
+void ControllerServer::stopRobot()
 {
     geometry_msgs::msg::Twist zero_vel;
-    zero_vel.linear.x = 0.0;
-    zero_vel.linear.y = 0.0;
-    zero_vel.linear.z = 0.0;
-    zero_vel.angular.x = 0.0;
-    zero_vel.angular.y = 0.0;
-    zero_vel.angular.z = 0.0;
     cmd_vel_pub_->publish(std::move(zero_vel));
 }
 }

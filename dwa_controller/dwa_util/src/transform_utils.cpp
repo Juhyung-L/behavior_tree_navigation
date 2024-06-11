@@ -20,6 +20,7 @@ bool transformPath2D(
         return true;
     }
 
+    out_path.header.frame_id = target_frame;
     geometry_msgs::msg::TransformStamped transform;
     try
     {
