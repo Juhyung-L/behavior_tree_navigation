@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "source ROS workspace",
             "envFile": "${workspaceFolder}/.env",
-            "program": "/home/dev_ws/install/bt_navigator_server/lib/bt_navigator_server/bt_navigator_server",
+            "program": "/home/dev_ws/install/behaviors/lib/behaviors/behavior_server",
             "args": [
                 "--ros-args",
                 "--params-file",

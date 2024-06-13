@@ -11,6 +11,8 @@
 #include "bt_nodes/plugins/control/pipeline_sequence.hpp"
 #include "bt_nodes/plugins/control/recovery.hpp"
 #include "bt_nodes/plugins/control/round_robin.hpp"
+#include "bt_nodes/plugins/action/back_up_action.hpp"
+#include "bt_nodes/plugins/action/wait_action.hpp"
 
 #define REGISTER_ACTION_NODE(factory, node_class, pascal_node_name) \
 do \
@@ -57,6 +59,8 @@ int main(int argc, char** argv)
     BT::BehaviorTreeFactory factory;
     REGISTER_ACTION_NODE(factory, bt_nodes::ComputePathToPoseAction, "ComputePathToPose");
     REGISTER_ACTION_NODE(factory, bt_nodes::FollowPathAction, "FollowPath");
+    REGISTER_ACTION_NODE(factory, bt_nodes::BackUpAction, "BackUp");
+    REGISTER_ACTION_NODE(factory, bt_nodes::WaitAction, "Wait");
     REGISTER_CONTROL_NODE(factory, bt_nodes::Recovery, "Recovery");
     REGISTER_CONTROL_NODE(factory, bt_nodes::RoundRobin, "RoundRobin");
     REGISTER_CONTROL_NODE(factory, bt_nodes::PipelineSequence, "PipelineSequence");

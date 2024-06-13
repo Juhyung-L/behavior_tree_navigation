@@ -1,0 +1,13 @@
+<class_libraries>
+	<library path="back_up_behavior">
+	  <class type="behaviors::BackUp" base_class_type="gnc_core::Behavior">
+	    <description></description>
+	  </class>
+	</library>
+
+	<library path="wait_behavior">
+	  <class type="behaviors::Wait" base_class_type="gnc_core::Behavior">
+	    <description></description>
+	  </class>
+	</library>
+</class_libraries>

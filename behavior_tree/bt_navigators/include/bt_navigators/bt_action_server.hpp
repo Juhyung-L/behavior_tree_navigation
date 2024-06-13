@@ -50,7 +50,6 @@ public:
         node->declare_parameter("bt_loop_duration", 10);
         node->declare_parameter("server_timeout", 20);
         node->declare_parameter("wait_for_service_timeout", 1000);
-        node->declare_parameter("action_server_result_timeout", 900.0);
     }
 
     ~BTActionServer() {}
@@ -61,11 +60,6 @@ public:
 
         client_node_ = std::make_shared<rclcpp::Node>("client_node", rclcpp::NodeOptions());
 
-        double action_server_result_timeout =
-        node->get_parameter("action_server_result_timeout").as_double();
-        rcl_action_server_options_t server_options = rcl_action_server_get_default_options();
-        server_options.result_timeout.nanoseconds = RCL_S_TO_NS(action_server_result_timeout);
-
         action_server_ = std::make_shared<ActionServer>(
             node->get_node_base_interface(),
             node->get_node_clock_interface(),
@@ -75,8 +69,7 @@ public:
             std::bind(&BTActionServer<ActionT>::executeCallback, this),
             nullptr,
             std::chrono::milliseconds(500),
-            false,
-            server_options);
+            false);
 
         int time;
         node->get_parameter("bt_loop_duration", time);

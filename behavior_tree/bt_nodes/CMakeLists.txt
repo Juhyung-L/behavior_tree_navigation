@@ -40,6 +40,12 @@ list(APPEND bt_nodes recovery_bt_node)
 add_library(round_robin_bt_node SHARED plugins/control/round_robin.cpp)
 list(APPEND bt_nodes round_robin_bt_node)
 
+add_library(back_up_action_bt_node SHARED plugins/action/back_up_action.cpp)
+list(APPEND bt_nodes back_up_action_bt_node)
+
+add_library(wait_action_bt_node SHARED plugins/action/wait_action.cpp)
+list(APPEND bt_nodes wait_action_bt_node)
+
 foreach(bt_node ${bt_nodes})
   ament_target_dependencies(${bt_node} ${dependencies})
   target_compile_definitions(${bt_node} PRIVATE BT_PLUGIN_EXPORT)

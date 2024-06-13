@@ -14,11 +14,9 @@ class BackUp : public TimedBehavior<gnc_msgs::action::BackUp>
 public:
     BackUp();
     ~BackUp() = default;
-    ResultStatus onRun(const std::shared_ptr<const typename Action::Goal> command) override;
+    ResultStatus onRun(const std::shared_ptr<const Action::Goal> command) override;
     ResultStatus onCycleUpdate() override;
     void onConfigure() override;
-    void onCleanup() override;
-    void onActionCompletion(std::shared_ptr<typename Action::Result> result) override;
 private:
     geometry_msgs::msg::Vector3 getDirectionToNearestObstacle(const geometry_msgs::msg::PoseStamped& current_pose);
     bool isObstacleFree(const geometry_msgs::msg::Twist& cmd_vel, const geometry_msgs::msg::PoseStamped& current_pose);

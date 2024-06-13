@@ -1,0 +1,14 @@
+<root BTCPP_format="4" main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <Recovery number_of_retries="3" name="NaivgateRecovery">
+      <PipelineSequence name="NavigateToPose">
+        <ComputePathToPose name="ComputePathToPose" goal="{goal}" path="{path}"/>
+        <FollowPath name="FollowPath" path="{path}"/>
+      </PipelineSequence>
+      <RoundRobin name="RecoveryActions">
+          <Wait wait_duration="1"/>
+          <BackUp back_up_dist="0.3" back_up_speed="0.3" back_up_duration="5"/>
+      </RoundRobin>
+    </Recovery>
+  </BehaviorTree>
+</root>

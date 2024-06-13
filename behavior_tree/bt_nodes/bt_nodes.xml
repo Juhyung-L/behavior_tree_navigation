@@ -1,5 +1,12 @@
 <root BTCPP_format="4">
     <TreeNodesModel>
+        <Action ID="BackUp">
+            <input_port name="back_up_dist" type="double" default="0.300000">Distance to backup</input_port>
+            <input_port name="back_up_speed" type="double" default="0.300000">Speed at which to backup</input_port>
+            <input_port name="back_up_duration" type="double" default="5.000000">Allowed time for reversing</input_port>
+            <input_port name="server_timeout" type="std::chrono::milliseconds"/>
+            <input_port name="server_name" type="std::string">Action server name</input_port>
+        </Action>
         <Action ID="ComputePathToPose">
             <input_port name="goal" type="geometry_msgs::msg::PoseStamped_&lt;std::allocator&lt;void&gt; &gt;">Destination to plan to</input_port>
             <output_port name="path" type="nav_msgs::msg::Path_&lt;std::allocator&lt;void&gt; &gt;">Path created by ComputePathToPose action</output_port>
@@ -16,5 +23,10 @@
             <input_port name="number_of_retries" type="int" default="1">Number of retries</input_port>
         </Control>
         <Control ID="RoundRobin"/>
+        <Action ID="Wait">
+            <input_port name="wait_duration" type="int" default="1">Wait time</input_port>
+            <input_port name="server_timeout" type="std::chrono::milliseconds"/>
+            <input_port name="server_name" type="std::string">Action server name</input_port>
+        </Action>
     </TreeNodesModel>
 </root>

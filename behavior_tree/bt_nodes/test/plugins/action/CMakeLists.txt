@@ -6,8 +6,18 @@ ament_add_gtest(test_compute_path_to_pose_action test_compute_path_to_pose_actio
 ament_target_dependencies(test_compute_path_to_pose_action ${dependencies})
 target_link_libraries(test_compute_path_to_pose_action compute_path_to_pose_action_bt_node)
 
+ament_add_gtest(test_back_up_action test_back_up_action.cpp)
+ament_target_dependencies(test_back_up_action ${dependencies})
+target_link_libraries(test_back_up_action back_up_action_bt_node)
+
+ament_add_gtest(test_wait_action test_wait_action.cpp)
+ament_target_dependencies(test_wait_action ${dependencies})
+target_link_libraries(test_wait_action wait_action_bt_node)
+
 install(TARGETS 
   test_follow_path_action
   test_compute_path_to_pose_action
+  test_back_up_action
+  test_wait_action
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )

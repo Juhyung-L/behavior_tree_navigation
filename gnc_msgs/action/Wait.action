@@ -1,9 +1,7 @@
 #goal definition
-float32 back_up_distance
-float32 back_up_speed
 builtin_interfaces/Duration duration
 ---
 #result definition
 builtin_interfaces/Duration total_elapsed_time
 ---
-#feedback
+#feedback definition

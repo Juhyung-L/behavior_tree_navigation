@@ -56,9 +56,9 @@ ControllerServer::on_configure(const rclcpp_lifecycle::State& /*state*/)
     cmd_vel_pub_ = create_publisher<geometry_msgs::msg::Twist>(
         "cmd_vel", rclcpp::SystemDefaultsQoS());
     
-    controller_ = controller_loader_.createUniqueInstance(controller_type_);
     try
     {
+        controller_ = controller_loader_.createUniqueInstance(controller_type_);
         controller_->configure(node, costmap_ros_->getTfBuffer(), costmap_ros_);
     }
     catch (std::exception& ex)
@@ -107,6 +107,7 @@ ControllerServer::on_cleanup(const rclcpp_lifecycle::State& /*state*/)
     RCLCPP_INFO(logger_, "Cleaning Up");
 
     costmap_ros_->cleanup();
+    costmap_ros_.reset();
     action_server_.reset();
     odom_smoother_.reset();
     costmap_thread_.reset();

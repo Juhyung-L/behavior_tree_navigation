@@ -53,7 +53,7 @@ NavigateToPoseNavigator::getDefaultBTFilepath(rclcpp_lifecycle::LifecycleNode::W
     {
         std::string default_bt_xml_filename = 
             ament_index_cpp::get_package_share_directory("bt_navigators") + 
-            "/behavior_trees/navigate_to_pose.xml";
+            "/behavior_trees/navigate_to_pose_w_recovery.xml";
         node->declare_parameter(plugin_name_ + ".default_bt_xml_filename", default_bt_xml_filename);
     }
     default_bt_xml_filename = node->get_parameter(plugin_name_ + ".default_bt_xml_filename").as_string();

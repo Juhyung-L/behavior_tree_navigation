@@ -42,9 +42,9 @@ PlannerServer::on_configure(const rclcpp_lifecycle::State& /*state*/)
     path_pub_ = create_publisher<nav_msgs::msg::Path>(
         "global_path", rclcpp::SystemDefaultsQoS());
 
-    planner_ = planner_loader_.createUniqueInstance(planner_type_);
     try
     {
+        planner_ = planner_loader_.createUniqueInstance(planner_type_);
         planner_->configure(node, tf_, costmap_ros_);
     }
     catch (std::exception& ex)
@@ -93,6 +93,7 @@ PlannerServer::on_cleanup(const rclcpp_lifecycle::State& /*state*/)
     RCLCPP_INFO(logger_, "Cleaning up");
 
     costmap_ros_->cleanup();
+    costmap_ros_.reset();
     action_server_.reset();
     costmap_thread_.reset();
     planner_.reset();

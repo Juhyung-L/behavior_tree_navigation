@@ -19,7 +19,13 @@ BTNavigatorServer::BTNavigatorServer(rclcpp::NodeOptions options)
     declare_parameter("robot_frame", "base_footprint");
     declare_parameter("transform_tolerance", 0.1);
     declare_parameter("odom_topic", "odom");
-    declare_parameter("plugin_lib_names", rclcpp::ParameterValue(std::vector<std::string>{}));
+    declare_parameter("plugin_lib_names", std::vector<std::string>{"follow_path_action_bt_node",
+      "compute_path_to_pose_action_bt_node",
+      "pipeline_sequence_bt_node",
+      "recovery_bt_node",
+      "round_robin_bt_node",
+      "wait_action_bt_node",
+      "back_up_action_bt_node"});
     declare_parameter("navigator_type", "bt_navigators::NavigateToPoseNavigator");
 }
 
@@ -49,9 +55,9 @@ BTNavigatorServer::on_configure(const rclcpp_lifecycle::State& /*state*/)
     odom_smoother_ = std::make_shared<nav2_util::OdomSmoother>(node, 0.3, odom_topic);
 
     std::string navigator_type = get_parameter("navigator_type").as_string();
-    navigator_ = class_loader_.createUniqueInstance(navigator_type);
     try
     {
+        navigator_ = class_loader_.createUniqueInstance(navigator_type);
         if (!navigator_->on_configure(node, odom_smoother_, plugin_lib_names, tf_, robot_frame, global_frame, transform_tolerance))
         {
             return nav2_util::CallbackReturn::FAILURE;
@@ -60,7 +66,7 @@ BTNavigatorServer::on_configure(const rclcpp_lifecycle::State& /*state*/)
     catch (std::exception& e)
     {
         RCLCPP_ERROR(get_logger(), 
-            "Failed to configure navigator of type %s"
+            "Failed to load navigator of type %s"
             "\nException: %s",
             navigator_type.c_str(),
             e.what());

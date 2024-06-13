@@ -428,24 +428,23 @@ bool DWALocalPlanner::loadCritics(const rclcpp_lifecycle::LifecycleNode::WeakPtr
 {
     if (critic_names_.empty())
     {
-        RCLCPP_ERROR(logger_, "No critics defined");
+        RCLCPP_ERROR(logger_, "No critics specified. You need at least one critic.");
         return false;
     }
 
-    for (auto critic_name : critic_names_)
+    for (size_t i=0; i<critic_names_.size(); ++i)
     {
-        critic_name = "dwa_critics::" + critic_name + "Critic";
-        dwa_critics::BaseCritic::Ptr critic = critic_loader_.createUniqueInstance(critic_name);
+        std::string critic_name = "dwa_critics::" + critic_names_[i] + "Critic";
         try
         {
-            critic->initialize(parent, costmap_ros_, plugin_name_);
+            critics_.push_back(critic_loader_.createUniqueInstance(critic_name));
+            critics_[i]->initialize(parent, costmap_ros_, plugin_name_);
         }
         catch(const std::exception& e)
         {
             RCLCPP_ERROR(logger_, "Critic %s failed to initialize", critic_name.c_str());
             return false;
         }
-        critics_.push_back(critic);
     }
     return true;
 }
