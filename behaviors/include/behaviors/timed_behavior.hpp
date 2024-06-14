@@ -124,21 +124,11 @@ protected:
         }
 
         rclcpp::Time start_time = clock_->now();
-        rclcpp::Duration duration = rclcpp::Duration(goal->duration);
         rclcpp::WallRate loop_rate(cycle_frequency_);
 
         while(rclcpp::ok())
         {
             auto elapsed_time = clock_->now() - start_time;
-            if (duration < elapsed_time)
-            {
-                RCLCPP_ERROR(logger_, "Allowed time for %s passed. Aborting.", behavior_name_.c_str());
-                stopRobot();
-                result->total_elapsed_time = elapsed_time;
-                onActionCompletion(result);
-                action_server_->terminate_all(result);
-                return;
-            }
 
             if (action_server_->is_cancel_requested())
             {

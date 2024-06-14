@@ -24,7 +24,7 @@ void BackUp::onConfigure()
     simulate_ahead_time_ = node->get_parameter(behavior_name_ + ".simulate_ahead_time").as_double();
 }
 
-ResultStatus BackUp::onRun(const std::shared_ptr<const Action::Goal> /*command*/)
+ResultStatus BackUp::onRun(const std::shared_ptr<const Action::Goal> command)
 {
     if (!nav2_util::getCurrentPose(initial_pose_, *tf_, costmap_frame_, robot_frame_, transform_tolerance_))
     {
@@ -36,11 +36,20 @@ ResultStatus BackUp::onRun(const std::shared_ptr<const Action::Goal> /*command*/
     // back up direction is the opposite of the direction to the closest obstacle
     back_up_direction_.x *= -1.0;
     back_up_direction_.y *= -1.0;
+
+    end_time_ = clock_->now() + rclcpp::Duration(command->duration);
     return ResultStatus::SUCCEEDED;
 }
 
 ResultStatus BackUp::onCycleUpdate()
 {
+    auto time_left = end_time_ - clock_->now();
+    if (time_left.seconds() < 0)
+    {
+        RCLCPP_ERROR(logger_, "Allowed time for %s passed. Aborting.", behavior_name_.c_str());
+        return ResultStatus::FAILED;
+    }
+
     auto goal = action_server_->get_current_goal();
 
     geometry_msgs::msg::PoseStamped current_pose;

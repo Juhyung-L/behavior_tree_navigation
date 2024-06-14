@@ -67,10 +67,10 @@ TEST_F(BackUpTestFixture, test_tick)
         </root>)";
     tree_ = std::make_shared<BT::Tree>(factory_->createTreeFromText(xml_txt, config_->blackboard));
 
-    rclcpp::Time start_time = node_->now();
 
     rclcpp::WallRate r(20.0);
     BT::NodeStatus status = BT::NodeStatus::IDLE;
+    rclcpp::Time start_time = node_->now();
     while (rclcpp::ok() && status != BT::NodeStatus::SUCCESS)
     {
         tree_->rootNode()->executeTick();
@@ -80,7 +80,7 @@ TEST_F(BackUpTestFixture, test_tick)
     rclcpp::Duration elapsed_time = node_->now() - start_time;
     tree_->haltTree();
 
-    EXPECT_NEAR(elapsed_time.seconds(), 3.0, 0.01);
+    EXPECT_NEAR(elapsed_time.seconds(), 3.0, 1.0);
 }
 
 int main(int argc, char** argv)

@@ -16,7 +16,7 @@ public:
     ResultStatus onRun(const std::shared_ptr<const Action::Goal> command) override;
     ResultStatus onCycleUpdate() override;
 private:
-    rclcpp::Time wait_end_;
+    rclcpp::Time end_time_;
 };
 }
 #endif

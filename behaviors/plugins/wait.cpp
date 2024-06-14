@@ -11,17 +11,15 @@ Wait::Wait()
 
 ResultStatus Wait::onRun(const std::shared_ptr<const Action::Goal> command)
 {
-    auto node = parent_.lock();
-    wait_end_ = node->now() + rclcpp::Duration(command->duration);
+    end_time_ = clock_->now() + rclcpp::Duration(command->duration);
     return ResultStatus::SUCCEEDED;
 }
 
 ResultStatus Wait::onCycleUpdate()
 {
-    auto node = parent_.lock();
-    auto time_left = wait_end_ - node->now();
+    auto time_left = end_time_ - clock_->now();
 
-    if (time_left.nanoseconds() > 0)
+    if (time_left.seconds() > 0)
     {
         return ResultStatus::RUNNING;
     }

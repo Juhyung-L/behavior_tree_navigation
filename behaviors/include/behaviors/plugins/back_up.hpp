@@ -23,6 +23,7 @@ private:
     geometry_msgs::msg::Vector3 back_up_direction_;
     geometry_msgs::msg::PoseStamped initial_pose_;
     double simulate_ahead_time_;
+    rclcpp::Time end_time_;
 };
 }
 #endif
