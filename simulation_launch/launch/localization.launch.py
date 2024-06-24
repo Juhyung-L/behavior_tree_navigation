@@ -159,7 +159,10 @@ def generate_launch_description():
                 output='screen',
                 arguments=['--ros-args', '--log-level', log_level],
                 parameters=[{'node_names': lifecycle_nodes},
-                            {'autostart': autostart}])
+                            {'autostart': autostart},
+                            # make timeout infinite for debugging session
+                            # {'bond_timeout': -1.0}
+                ])
         ]
     )
 

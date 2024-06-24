@@ -2,13 +2,28 @@
   <BehaviorTree ID="MainTree">
     <Recovery number_of_retries="3" name="NaivgateRecovery">
       <PipelineSequence name="NavigateToPose">
-        <ComputePathToPose name="ComputePathToPose" goal="{goal}" path="{path}"/>
-        <FollowPath name="FollowPath" path="{path}"/>
+        <RateController hz="1.0">
+          <Recovery number_of_retries="1" name="ComputePathToPose">  
+            <ComputePathToPose goal="{goal}" path="{path}"/>
+            <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
+          </Recovery>
+        </RateController>
+        <Recovery number_of_retries="1" name="FollowPath">
+          <FollowPath path="{path}"/>
+          <ClearEntireCostmap name="ClearLocalCostmap-Context" service_name="local_costmap/clear_entirely_local_costmap"/>
+        </Recovery>
       </PipelineSequence>
-      <RoundRobin name="RecoveryActions">
-          <Wait wait_duration="1"/>
-          <BackUp back_up_dist="0.3" back_up_speed="0.3" back_up_duration="5"/>
-      </RoundRobin>
+      <ReactiveFallback name="RecoveryFallback">
+        <GoalUpdated/>
+        <RoundRobin name="RecoveryActions">
+            <Sequence name="ClearCostmaps">
+              <ClearEntireCostmap name="ClearGlobalCostmap-Subtree" service_name="global_costmap/clear_entirely_global_costmap"/>
+              <ClearEntireCostmap name="ClearLocalCostmap-Subtree" service_name="local_costmap/clear_entirely_local_costmap"/>
+            </Sequence>
+            <Wait wait_duration="1"/>
+            <BackUp back_up_dist="0.3" back_up_speed="0.3" back_up_duration="5"/>
+        </RoundRobin>
+      </ReactiveFallback>
     </Recovery>
   </BehaviorTree>
 </root>

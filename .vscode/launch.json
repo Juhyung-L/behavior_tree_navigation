@@ -10,11 +10,11 @@
             "request": "launch",
             "preLaunchTask": "source ROS workspace",
             "envFile": "${workspaceFolder}/.env",
-            "program": "/home/dev_ws/install/behaviors/lib/behaviors/behavior_server",
+            "program": "/home/dev_ws/install/random_tests/lib/random_tests/test_behaviortree_nodes",
             "args": [
-                "--ros-args",
-                "--params-file",
-                "/home/dev_ws/src/simulation_launch/config/nav2_params.yaml"
+                // "--ros-args",
+                // "--params-file",
+                // "/home/dev_ws/src/simulation_launch/config/nav2_params.yaml"
             ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
@@ -38,7 +38,7 @@
             "name": "(gdb) Attach",
             "type": "cppdbg",
             "request": "attach",
-            "program": "/home/dev_ws/install/controller_server/lib/controller_server/controller_server",
+            "program": "/home/dev_ws/install/bt_navigator_server/lib/bt_navigator_server/bt_navigator_server",
             "processId": "${command:pickProcess}",
             "MIMode": "gdb",
             "setupCommands": [

@@ -21,13 +21,19 @@ bt_navigator_server:
       "recovery_bt_node",
       "round_robin_bt_node",
       "wait_action_bt_node",
-      "back_up_action_bt_node"
+      "back_up_action_bt_node",
+      "clear_costmap_service_bt_node",
+      "goal_updated_condition_bt_node",
+      "rate_controller_bt_node"
     ]
     navigator_type: "bt_navigators::NavigateToPoseNavigator"
     NavigateToPoseNavigator:
       goal_blackboard_id: "goal"
       path_blackboard_id: "path"
       default_bt_xml_filename: "/home/dev_ws/install/bt_navigators/share/bt_navigators/behavior_trees/navigate_to_pose_w_recovery.xml"
+    # for preventing timeout during debugging session
+    # server_timeout: -1
+    # wait_for_service_timeout: -1
 
 planner_server:
   ros__parameters:

@@ -28,6 +28,7 @@
         "/home/dev_ws/src/gnc_core/include/**",
         "/home/dev_ws/src/gnc_utils/include/**",
         "/home/dev_ws/src/planner_server/include/**",
+        "/home/dev_ws/src/random_tests/include/**",
         "/usr/include/**"
       ],
       "name": "ROS",

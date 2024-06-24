@@ -46,6 +46,15 @@ list(APPEND bt_nodes back_up_action_bt_node)
 add_library(wait_action_bt_node SHARED plugins/action/wait_action.cpp)
 list(APPEND bt_nodes wait_action_bt_node)
 
+add_library(clear_costmap_service_bt_node SHARED plugins/action/clear_costmap_service.cpp)
+list(APPEND bt_nodes clear_costmap_service_bt_node)
+
+add_library(goal_updated_condition_bt_node SHARED plugins/condition/goal_updated_condition.cpp)
+list(APPEND bt_nodes goal_updated_condition_bt_node)
+
+add_library(rate_controller_bt_node SHARED plugins/decorator/rate_controller.cpp)
+list(APPEND bt_nodes rate_controller_bt_node)
+
 foreach(bt_node ${bt_nodes})
   ament_target_dependencies(${bt_node} ${dependencies})
   target_compile_definitions(${bt_node} PRIVATE BT_PLUGIN_EXPORT)

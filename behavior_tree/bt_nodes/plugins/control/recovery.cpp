@@ -15,7 +15,7 @@ Recovery::Recovery(
  * This node can only have 2 children.
  * If the first child returns SUCCESS, just return SUCCESS.
  * If the first child returns FAILURE, tick the second (recovery) child.
- * - if the second child returns SUCCESS, return SUCCESS and in the next tick, 
+ * - if the second child returns SUCCESS, return RUNNING and in the next tick, 
  *   the first child is ticked again.
  * - if the second child returns FAILURE, return FAILURE (recovery failed).
  * Before ticking the second node, check if the max number of recoveries
@@ -34,7 +34,7 @@ BT::NodeStatus Recovery::tick()
             "It has " + std::to_string(num_children) + " children");
     }
 
-      setStatus(BT::NodeStatus::RUNNING);
+    setStatus(BT::NodeStatus::RUNNING);
 
     while (current_child_idx_ < num_children && retry_count_ <= number_of_retries_) 
     {
@@ -62,7 +62,7 @@ BT::NodeStatus Recovery::tick()
                         // halt first child and tick second child in next iteration
                         ControlNode::haltChild(0);
                         current_child_idx_++;
-                        break;
+                        return BT::NodeStatus::RUNNING;
                     } 
                     else 
                     {
@@ -100,7 +100,7 @@ BT::NodeStatus Recovery::tick()
                     ControlNode::haltChild(1);
                     retry_count_++;
                     current_child_idx_ = 0;
-                    break;
+                    return BT::NodeStatus::RUNNING;
                 }
                 case BT::NodeStatus::FAILURE:
                     // reset node and return failure if second child fails
@@ -113,7 +113,8 @@ BT::NodeStatus Recovery::tick()
             }
         }
     }
-    // reset node and return failure
+
+    // this should never be reached since all of the case statements have a return (or throws error) statement
     halt();
     return BT::NodeStatus::FAILURE;
 }

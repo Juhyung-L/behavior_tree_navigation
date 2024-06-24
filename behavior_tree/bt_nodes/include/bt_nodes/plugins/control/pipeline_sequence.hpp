@@ -17,7 +17,7 @@ public:
 protected:
     BT::NodeStatus tick() override;
 
-    size_t last_child_ticked_ = 0;
+    size_t last_child_ticked_{0};
 };
 }
 

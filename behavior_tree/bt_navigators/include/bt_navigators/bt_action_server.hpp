@@ -259,15 +259,15 @@ private:
         switch(tree_result)
         {
             case BTStatus::SUCCEEDED:
-                RCLCPP_INFO(logger_, "Goal succeeded");
+                RCLCPP_INFO(logger_, "[%s] Goal succeeded", action_name_.c_str());
                 action_server_->succeeded_current(result);
                 break;
             case BTStatus::FAILED:
-                RCLCPP_ERROR(logger_, "Goal failed");
+                RCLCPP_ERROR(logger_, "[%s] Goal failed", action_name_.c_str());
                 action_server_->terminate_current(result);
                 break;
             case BTStatus::CANCELED:
-                RCLCPP_INFO(logger_, "Goal canceled");
+                RCLCPP_INFO(logger_, "[%s] Goal canceled", action_name_.c_str());
                 action_server_->terminate_all(result);
                 break;
         }

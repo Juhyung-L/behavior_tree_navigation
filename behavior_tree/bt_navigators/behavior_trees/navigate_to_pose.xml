@@ -1,8 +1,16 @@
 <root BTCPP_format="4" main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
     <PipelineSequence name="NavigateToPose">
-      <ComputePathToPose name="ComputePathToPose" goal="{goal}" path="{path}"/>
-      <FollowPath name="FollowPath" path="{path}"/>
-    </PipelineSequence>
+        <RateController hz="1.0">
+          <Recovery number_of_retries="1" name="ComputePathToPose">  
+            <ComputePathToPose goal="{goal}" path="{path}"/>
+            <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
+          </Recovery>
+        </RateController>
+        <Recovery number_of_retries="1" name="FollowPath">
+          <FollowPath path="{path}"/>
+          <ClearEntireCostmap name="ClearLocalCostmap-Context" service_name="local_costmap/clear_entirely_local_costmap"/>
+        </Recovery>
+      </PipelineSequence>
   </BehaviorTree>
 </root>
