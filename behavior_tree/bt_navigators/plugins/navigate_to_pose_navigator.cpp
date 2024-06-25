@@ -158,7 +158,9 @@ void NavigateToPoseNavigator::onLoop()
 
 void NavigateToPoseNavigator::onPreempt(typename ActionT::Goal::ConstSharedPtr goal)
 {
-    if (goal->behavior_tree == bt_action_server_->getCurrentBTFilename())
+    if ((goal->behavior_tree.empty() && 
+        bt_action_server_->getDefaultBTFilename() == bt_action_server_->getCurrentBTFilename()) ||
+        goal->behavior_tree == bt_action_server_->getCurrentBTFilename())
     {
         if (!initializeGoalPose(bt_action_server_->acceptPendingGoal()))
         {
@@ -167,11 +169,10 @@ void NavigateToPoseNavigator::onPreempt(typename ActionT::Goal::ConstSharedPtr g
                 "transformed. For now, continuing to track the last goal until completion.");
             bt_action_server_->terminatePendingGoal();
         }
-        else
-        {
-            RCLCPP_WARN(logger_, "Preempting with a new behavior tree is not allowed");
-            bt_action_server_->terminatePendingGoal();
-        }
+    }
+    else
+    {
+        RCLCPP_WARN(logger_, "Preempting with a new behavior tree is not allowed");
     }
 }
 

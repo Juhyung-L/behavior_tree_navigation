@@ -179,6 +179,11 @@ public:
         return current_bt_xml_filename_;
     }
 
+    std::string getDefaultBTFilename() const
+    {
+        return default_bt_xml_filename_;
+    }
+
     const std::shared_ptr<const typename ActionT::Goal> acceptPendingGoal()
     {
         return action_server_->accept_pending_goal();

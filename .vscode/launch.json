@@ -38,7 +38,7 @@
             "name": "(gdb) Attach",
             "type": "cppdbg",
             "request": "attach",
-            "program": "/home/dev_ws/install/bt_navigator_server/lib/bt_navigator_server/bt_navigator_server",
+            "program": "/home/dev_ws/install/controller_server/lib/controller_server/controller_server",
             "processId": "${command:pickProcess}",
             "MIMode": "gdb",
             "setupCommands": [

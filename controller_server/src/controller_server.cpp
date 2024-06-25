@@ -126,13 +126,13 @@ ControllerServer::on_shutdown(const rclcpp_lifecycle::State& /*state*/)
 }
 
 void ControllerServer::executeController()
-{
-    auto goal = action_server_->get_current_goal();
-
+{    
     progress_checker_->reset();
     rclcpp::WallRate loop_rate(controller_frequency_);
     while (rclcpp::ok())
     {
+        auto goal = action_server_->get_current_goal();
+
         // cancel requested
         if (action_server_->is_cancel_requested())
         {
