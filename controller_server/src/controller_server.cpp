@@ -153,42 +153,40 @@ void ControllerServer::executeController()
         {
             r.sleep();
         }
-        
-        geometry_msgs::msg::PoseStamped cur_pose;
-        if (!costmap_ros_->getRobotPose(cur_pose))
-        {
-            RCLCPP_ERROR(logger_, "Failed to get robot pose");
-            stopRobot();
-            action_server_->terminate_current();
-            return;
-        }
 
-        // exit if robot hasn't progressed
-        if (!progress_checker_->isProgressed(cur_pose.pose))
+        if (goal && !goal->path.poses.empty())
         {
-            RCLCPP_ERROR(logger_, "Failed to progress towards goal");
-            stopRobot();
-            action_server_->terminate_current();
-            return;
-        }
-        
-        // last pose of global path is the goal
-        const nav_msgs::msg::Path& global_path = goal->path;
-        geometry_msgs::msg::Pose goal_pose = global_path.poses.back().pose;
-        if (goal_checker_->isGoalReached(cur_pose.pose, goal_pose))
-        {
-            RCLCPP_INFO(logger_, "Goal reached");
-            stopRobot();
-            action_server_->succeeded_current();
-            return;
-        }
-        geometry_msgs::msg::Twist cur_vel = odom_smoother_->getTwist();
+            geometry_msgs::msg::PoseStamped cur_pose;
+            if (costmap_ros_->getRobotPose(cur_pose))
+            {
+                // exit if robot hasn't progressed
+                if (!progress_checker_->isProgressed(cur_pose.pose))
+                {
+                    RCLCPP_ERROR(logger_, "Failed to progress towards goal");
+                    stopRobot();
+                    action_server_->terminate_current();
+                    return;
+                }
 
-        // compute velocity command
-        geometry_msgs::msg::Twist cmd_vel = controller_->computeVelocityCommand(
-            cur_pose.pose, cur_vel, global_path);
-        cmd_vel_pub_->publish(cmd_vel);
-        publishFeedback(cur_pose.pose, cmd_vel, global_path);
+                // last pose of global path is the goal
+                const nav_msgs::msg::Path& global_path = goal->path;
+                geometry_msgs::msg::Pose goal_pose = global_path.poses.back().pose;
+                if (goal_checker_->isGoalReached(cur_pose.pose, goal_pose))
+                {
+                    RCLCPP_INFO(logger_, "Goal reached");
+                    stopRobot();
+                    action_server_->succeeded_current();
+                    return;
+                }
+                geometry_msgs::msg::Twist cur_vel = odom_smoother_->getTwist();
+
+                // compute velocity command
+                geometry_msgs::msg::Twist cmd_vel = controller_->computeVelocityCommand(
+                    cur_pose.pose, cur_vel, global_path);
+                cmd_vel_pub_->publish(cmd_vel);
+                publishFeedback(cur_pose.pose, cmd_vel, global_path);
+            }
+        }
 
         if (!loop_rate.sleep())
         {

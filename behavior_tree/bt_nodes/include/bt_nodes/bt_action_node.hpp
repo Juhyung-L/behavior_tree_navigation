@@ -112,45 +112,45 @@ public:
     BT::NodeStatus tick() override
     {
         // isStatusActive returns true if status is not NodeStatus::IDLE and NodeStatus::SKIPPED
-       if (!BT::isStatusActive(status()))
-       {
-            setStatus(BT::NodeStatus::RUNNING);
+        if (!BT::isStatusActive(status()))
+        {
+                setStatus(BT::NodeStatus::RUNNING);
 
-            should_send_goal_ = true;
+                should_send_goal_ = true;
 
-            on_tick();
+                on_tick();
 
-            if (!should_send_goal_)
-            {
-                return BT::NodeStatus::FAILURE;
-            }
-            send_new_goal();
-       }
-
-       try
-       {
-            if (future_goal_handle_) // future_goal_handle_ is not null means a goal was sent
-            {
-                // check time elapsed from when goal was sent
-                auto elapsed =
-                    (node_->now() - time_goal_sent_).to_chrono<std::chrono::milliseconds>();
-                
-                if (!is_future_goal_handle_complete(elapsed)) 
+                if (!should_send_goal_)
                 {
-                    // return RUNNING if there is still some time before timeout happens
-                    if (elapsed < server_timeout_) 
-                    {
-                        return BT::NodeStatus::RUNNING;
-                    }
-                    // if server has taken more time than the specified timeout value return FAILURE
-                    RCLCPP_WARN(
-                        node_->get_logger(),
-                        "Timed out while waiting for action server to acknowledge goal request for %s",
-                        action_name_.c_str());
-                    future_goal_handle_.reset();
                     return BT::NodeStatus::FAILURE;
                 }
-            }
+                send_new_goal();
+        }
+
+        try
+        {
+                if (future_goal_handle_) // future_goal_handle_ is not null means a goal was sent
+                {
+                    // check time elapsed from when goal was sent
+                    auto elapsed =
+                        (node_->now() - time_goal_sent_).to_chrono<std::chrono::milliseconds>();
+                    
+                    if (!is_future_goal_handle_complete(elapsed)) 
+                    {
+                        // return RUNNING if there is still some time before timeout happens
+                        if (elapsed < server_timeout_) 
+                        {
+                            return BT::NodeStatus::RUNNING;
+                        }
+                        // if server has taken more time than the specified timeout value return FAILURE
+                        RCLCPP_WARN(
+                            node_->get_logger(),
+                            "Timed out while waiting for action server to acknowledge goal request for %s",
+                            action_name_.c_str());
+                        future_goal_handle_.reset();
+                        return BT::NodeStatus::FAILURE;
+                    }
+                }
 
             if (rclcpp::ok() && !goal_result_available_)
             {

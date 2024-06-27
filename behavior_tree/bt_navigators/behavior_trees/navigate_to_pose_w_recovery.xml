@@ -15,14 +15,10 @@
       </PipelineSequence>
       <ReactiveFallback name="RecoveryFallback">
         <GoalUpdated/>
-        <RoundRobin name="RecoveryActions">
-            <Sequence name="ClearCostmaps">
-              <ClearEntireCostmap name="ClearGlobalCostmap-Subtree" service_name="global_costmap/clear_entirely_global_costmap"/>
-              <ClearEntireCostmap name="ClearLocalCostmap-Subtree" service_name="local_costmap/clear_entirely_local_costmap"/>
-            </Sequence>
+        <Sequence name="RecoveryActions">
             <Wait wait_duration="1"/>
-            <BackUp back_up_dist="0.3" back_up_speed="0.3" back_up_duration="5"/>
-        </RoundRobin>
+            <BackUp back_up_dist="1.0" back_up_speed="0.3" back_up_duration="20"/>
+        </Sequence>
       </ReactiveFallback>
     </Recovery>
   </BehaviorTree>

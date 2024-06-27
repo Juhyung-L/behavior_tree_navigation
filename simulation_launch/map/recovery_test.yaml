@@ -1,0 +1,7 @@
+image: recovery_test.png
+mode: trinary
+resolution: 0.05
+origin: [-0.933, -1.94, 0]
+negate: 0
+occupied_thresh: 0.9
+free_thresh: 0.1

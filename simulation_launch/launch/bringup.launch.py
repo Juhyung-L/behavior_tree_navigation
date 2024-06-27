@@ -13,9 +13,9 @@ def generate_launch_description():
     
     rviz_config_file_path = os.path.join(pkg_share, 'config', 'urdf_config.rviz')
     ekf_config_file_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
-    world_file_path = os.path.join(pkg_share, 'worlds', 'house.world')
+    world_file_path = os.path.join(pkg_share, 'worlds', 'obstacle_course.world')
     robot_model_file_path = os.path.join(pkg_share, 'urdf', 'kiwi_drive', 'mobile_bot.urdf')
-    map_yaml_file_path = os.path.join(pkg_share, 'map', 'map.yaml')
+    map_yaml_file_path = os.path.join(pkg_share, 'map', 'obstacle_course.yaml')
     params_file_path = os.path.join(pkg_share, 'config', 'nav2_params.yaml')
 
     # launch configuration variables
@@ -43,12 +43,12 @@ def generate_launch_description():
     )
     declare_x_spawn = DeclareLaunchArgument(
         name='x_spawn', 
-        default_value='-1.0',
+        default_value='0.0',
         description='x position of robot at spawn'
     )
     declare_y_spawn = DeclareLaunchArgument(
         name='y_spawn', 
-        default_value='1.0',
+        default_value='0.0',
         description='y position of robot at spawn'
     )
     declare_yaw_spawn = DeclareLaunchArgument(
@@ -114,8 +114,8 @@ def generate_launch_description():
         }.items()
     )
 
-    # launch nav2 localization
-    nav2_localization_launch = IncludeLaunchDescription(
+    # launch localization
+    localization_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_share, 'launch', 'localization.launch.py')
         ),
@@ -129,6 +129,19 @@ def generate_launch_description():
             'log_level': log_level
         }.items()
     )
+
+    # # launch slam
+    # slam_launch = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(
+    #         os.path.join(pkg_share, 'launch', 'slam.launch.py')
+    #     ),
+    #     launch_arguments={
+    #         'use_sim_time': use_sim_time,
+    #         'params_file': params_file,
+    #         'log_level': log_level
+    #     }.items()
+    # )
+
 
     return LaunchDescription([
         delcare_rviz_config_file,
@@ -145,5 +158,6 @@ def generate_launch_description():
         robot_localization_node,
         rviz_node,
         robot_world_launch,
-        nav2_localization_launch
+        localization_launch
+        # slam_launch
     ])

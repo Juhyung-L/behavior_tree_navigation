@@ -161,7 +161,7 @@ def generate_launch_description():
                 parameters=[{'node_names': lifecycle_nodes},
                             {'autostart': autostart},
                             # make timeout infinite for debugging session
-                            # {'bond_timeout': -1.0}
+                            {'bond_timeout': -1.0}
                 ])
         ]
     )

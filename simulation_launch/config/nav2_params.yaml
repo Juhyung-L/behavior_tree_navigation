@@ -73,7 +73,7 @@ controller_server:
       acc_theta: 2.5
       critic_names: [
         "GlobalPathAlign", 
-        "ObstacleProximity", 
+        "ObstacleProximity",
         # "PathLength"
       ]
       GlobalPathAlign:
@@ -201,8 +201,8 @@ global_costmap:
         map_subscribe_transient_local: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.0
+        cost_scaling_factor: 5.0
+        inflation_radius: 0.24
       always_send_full_costmap: True
 
 map_server:
