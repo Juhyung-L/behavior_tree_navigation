@@ -13,9 +13,9 @@ def generate_launch_description():
     
     rviz_config_file_path = os.path.join(pkg_share, 'config', 'urdf_config.rviz')
     ekf_config_file_path = os.path.join(pkg_share, 'config', 'ekf.yaml')
-    world_file_path = os.path.join(pkg_share, 'worlds', 'obstacle_course.world')
+    world_file_path = os.path.join(pkg_share, 'worlds', 'house.world')
     robot_model_file_path = os.path.join(pkg_share, 'urdf', 'kiwi_drive', 'mobile_bot.urdf')
-    map_yaml_file_path = os.path.join(pkg_share, 'map', 'obstacle_course.yaml')
+    map_yaml_file_path = os.path.join(pkg_share, 'map', 'house.yaml')
     params_file_path = os.path.join(pkg_share, 'config', 'nav2_params.yaml')
 
     # launch configuration variables
@@ -43,12 +43,12 @@ def generate_launch_description():
     )
     declare_x_spawn = DeclareLaunchArgument(
         name='x_spawn', 
-        default_value='0.0',
+        default_value='-1.0',
         description='x position of robot at spawn'
     )
     declare_y_spawn = DeclareLaunchArgument(
         name='y_spawn', 
-        default_value='0.0',
+        default_value='1.0',
         description='y position of robot at spawn'
     )
     declare_yaw_spawn = DeclareLaunchArgument(
