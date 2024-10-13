@@ -3,7 +3,7 @@ PS: A lot of the code is taken from Navigation2. This was a project for me to re
 
 This repository uses the BehaviorTreeCPP library to add reactive recovery behavior to robot navigation.
 
-Detailed explanation at: https://juhyungsprojects.blogspot.com/2024/06/behavior-tree-navigation.html
+Detailed explanation at: https://juhyunglee0313.wixsite.com/portfolio/post/behavior-tree-navigation
 
 # BehaviorTree Navigation
 ![fig1](https://github.com/Juhyung-L/behavior_tree_navigation/assets/102873080/ff78b729-25f7-4f44-89ad-880f3be13d73)
