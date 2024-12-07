@@ -14,4 +14,4 @@ The left half of the tree is responsible for navigation. It consists of a recove
 
 The right half of the tree is the recovery behavior. If, for whatever reason, the robot stops moving (maybe it got stuck on an undetected obstacle), the recovery behavior will execute making the robot back up a set distance before trying to move forward again.
 
-[![Watch the video](https://img.youtube.com/vi/qKYPtDzhmn0/maxresdefault.jpg)](https://www.youtube.com/watch?v=qKYPtDzhmn0)
+[![Watch the video](https://img.youtube.com/vi/hrt4NS4mcOM/maxresdefault.jpg)](https://www.youtube.com/watch?v=hrt4NS4mcOM)
